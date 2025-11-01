@@ -11,6 +11,7 @@ import { AnimatedKeyIngredients } from '@/components/ui/animated-key-ingredients
 import EubiosisHero from '@/components/ui/eubiosis-hero'
 import EubiosisTestimonials from '@/components/ui/eubiosis-testimonials'
 import useExitIntent from '@/components/ui/exit-intent-popup'
+import BottomNav from '@/components/BottomNav'
 import { productSchema } from '@/lib/seo'
 
 export default function Home() {
@@ -37,6 +38,11 @@ export default function Home() {
   const handleBrowsingClick = () => {
     setSelectedIllness(null);
     setViewMode('browsing');
+  }
+
+  const handleResetToHero = () => {
+    setSelectedIllness(null);
+    setViewMode('hero-only');
   }
 
   const benefits = [
@@ -134,23 +140,25 @@ export default function Home() {
 
   return (
     <main>
-      {/* Hero Section */}
-      <section 
-        className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-[#e8f4f8] to-white"
-        style={{
-          backgroundImage: 'url(/images/hero%20bg.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
-        }}
-      >
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40 z-0"></div>
-        
-        {/* Hero Section */}
-        <EubiosisHero onIllnessClick={handleIllnessClick} onBrowsingClick={handleBrowsingClick} />
-      </section>
+      {/* Hero Section - Only show in hero-only and browsing modes */}
+      {(viewMode === 'hero-only' || viewMode === 'browsing') && (
+        <section 
+          className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-[#e8f4f8] to-white"
+          style={{
+            backgroundImage: 'url(/images/hero%20bg.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed'
+          }}
+        >
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40 z-0"></div>
+          
+          {/* Hero Section */}
+          <EubiosisHero onIllnessClick={handleIllnessClick} onBrowsingClick={handleBrowsingClick} />
+        </section>
+      )}
 
       {/* SVG Filter for Gooey Buttons - Exact CodePen */}
       <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -165,7 +173,7 @@ export default function Home() {
         </filter>
       </svg>
 
-      {/* What is Eubiosis */}
+      {/* What is Eubiosis - Show when illness selected or browsing */}
       {(viewMode === 'illness-selected' || viewMode === 'browsing') && (
         <EubiosisFeatures illness={selectedIllness} onBrowsingClick={handleBrowsingClick} />
       )}
@@ -367,6 +375,9 @@ export default function Home() {
 
       {/* Exit Intent Popup */}
       <ExitIntentPopup />
+
+      {/* Bottom Navigation */}
+      <BottomNav viewMode={viewMode} onResetToHero={handleResetToHero} />
 
       {/* Product Structured Data for SEO */}
       <script

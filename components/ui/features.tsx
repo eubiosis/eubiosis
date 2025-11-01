@@ -497,11 +497,11 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
   };
 
   return (
-    <div ref={sectionRef} className="min-h-screen py-16 px-4">
+    <div ref={sectionRef} className="min-h-screen py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div 
-          className={`${illness ? 'flex flex-col items-center text-center space-y-6' : 'grid lg:grid-cols-3 grid-cols-1 gap-8 items-center'} mb-16`}
+          className={`${illness ? 'flex flex-col items-center text-center space-y-2' : 'grid lg:grid-cols-3 grid-cols-1 gap-8 items-center'} mb-16`}
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
@@ -968,7 +968,7 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                 </div>
 
                 {/* Video Section - Right Side */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-0 max-w-xl">
                   <motion.div
                     key={currentFeature}
                     initial={{ opacity: 0, y: 50 }}
@@ -978,7 +978,7 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                     className="relative w-full"
                   >
                     {/* Video Placeholder Container */}
-                    <div className="w-full h-[250px] bg-gradient-to-br from-[#8bccc2] to-[#78b4aa] rounded-2xl border border-gray-200 dark:border-gray-700 flex items-center justify-center relative overflow-hidden cursor-pointer group"
+                    <div className="w-full h-[280px] bg-gradient-to-br from-[#8bccc2] to-[#78b4aa] rounded-2xl border border-gray-200 dark:border-gray-700 flex items-center justify-center relative overflow-hidden cursor-pointer group"
                          onClick={() => setSelectedVideoIndex(currentFeature)}>
                       
                       {/* Video placeholder background pattern */}

@@ -5,21 +5,65 @@ import Dock from '@/components/ui/dock'
 import { Home, ShoppingCart } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
-export default function BottomNav() {
+interface BottomNavProps {
+  viewMode?: 'hero-only' | 'illness-selected' | 'browsing'
+  onResetToHero?: () => void
+}
+
+export default function BottomNav({ viewMode, onResetToHero }: BottomNavProps) {
   const router = useRouter()
   const pathname = usePathname()
   const [isVisible, setIsVisible] = useState(false)
+  const [scrollY, setScrollY] = useState(0)
 
-  // Determine active item based on pathname
+  // Determine active item based on pathname and scroll position
   const getActiveItem = (): string | undefined => {
-    if (pathname === '/') return 'Home'
+    // Only mark home as active when on home page AND in hero-only mode AND at the top
+    if (pathname === '/' && viewMode === 'hero-only') {
+      // Only active when at the very top (within 100px of hero section)
+      if (scrollY < 100) {
+        return 'Home'
+      }
+    }
     if (pathname.startsWith('/shop') || pathname.startsWith('/eubiosis-bottle')) return 'Shop'
     return undefined
   }
 
+  // Function to scroll to hero section
+  const scrollToHero = () => {
+    if (pathname === '/') {
+      // If already on home page, scroll to top and reset view mode via callback
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Use callback to reset view mode instead of page reload
+      if (onResetToHero) {
+        setTimeout(() => {
+          onResetToHero()
+        }, 300)
+      }
+    } else {
+      // If on another page, navigate to home
+      router.push('/')
+    }
+  }
+
   useEffect(() => {
-    // Hide nav initially on home page and shop page
-    if (pathname === '/' || pathname === '/shop' || pathname.startsWith('/eubiosis-bottle')) {
+    // Show/hide nav based on view mode and page
+    if (pathname === '/') {
+      // Hide nav in hero-only mode or when viewMode is undefined (initial state)
+      if (viewMode === 'hero-only' || !viewMode) {
+        setIsVisible(false)
+      } else {
+        setIsVisible(true)
+      }
+      
+      // Track scroll position for active state
+      const handleScroll = () => {
+        setScrollY(window.scrollY)
+      }
+      
+      window.addEventListener('scroll', handleScroll)
+      return () => window.removeEventListener('scroll', handleScroll)
+    } else if (pathname === '/shop' || pathname.startsWith('/eubiosis-bottle')) {
       setIsVisible(false)
       
       const handleScroll = () => {
@@ -48,13 +92,13 @@ export default function BottomNav() {
       // Show nav immediately on other pages (like funnel)
       setIsVisible(true)
     }
-  }, [pathname])
+  }, [pathname, viewMode])
 
   const dockItems = [
     {
       icon: Home,
       label: 'Home',
-      onClick: () => router.push('/'),
+      onClick: scrollToHero,
     },
     {
       icon: ShoppingCart,
