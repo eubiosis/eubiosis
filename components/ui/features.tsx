@@ -349,7 +349,7 @@ const illnessContent = {
   }
 };
 
-export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero }: { illness?: string | null; onBrowsingClick?: () => void; onResetToHero?: () => void }) {
+export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPrevIllness, onNextIllness, onLearnMoreClick, cycling }: { illness?: string | null; onBrowsingClick?: () => void; onResetToHero?: () => void; onPrevIllness?: () => void; onNextIllness?: () => void; onLearnMoreClick?: () => void; cycling?: boolean }) {
   const [currentFeature, setCurrentFeature] = useState(0);
   const [progress, setProgress] = useState(0);
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(null);
@@ -539,7 +539,7 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero }: { 
               </motion.div>
               
               <motion.p 
-                className="text-base lg:text-lg text-text/70 leading-relaxed max-w-3xl"
+                className="text-sm lg:text-base text-text/70 leading-relaxed max-w-3xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                 transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
@@ -1068,40 +1068,100 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero }: { 
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
               >
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <motion.button 
-                    className="btn"
-                    onClick={onBrowsingClick}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    Just Browsing
-                  </motion.button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                  {/* Show carousel only when cycling */}
+                  {cycling && (
+                    <>
+                      {/* Carousel Navigation */}
+                      <div className="flex items-center gap-4">
+                        <motion.button 
+                          className="p-2 rounded-full bg-[#8bccc2]/20 hover:bg-[#8bccc2]/30 transition-colors"
+                          onClick={onPrevIllness}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                          transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <ChevronLeft className="w-5 h-5 text-[#8bccc2]" />
+                        </motion.button>
+                        
+                        {/* Dots Indicator */}
+                        <div className="flex gap-2">
+                          {['IBS', 'Diabetes', 'Anxiety', 'Depression', 'Autoimmune', 'Digestive Issues'].map((illnessName, index) => (
+                            <motion.div
+                              key={illnessName}
+                              className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${
+                                illness === illnessName ? 'bg-[#8bccc2]' : 'bg-gray-300 hover:bg-gray-400'
+                              }`}
+                              onClick={() => {
+                                // Dispatch event to change to specific illness
+                                const event = new CustomEvent('changeIllness', { detail: illnessName });
+                                window.dispatchEvent(event);
+                              }}
+                              initial={{ opacity: 0, scale: 0.5 }}
+                              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
+                              transition={{ duration: 0.4, delay: 1.0 + index * 0.1, ease: "easeOut" }}
+                              whileHover={{ scale: 1.2 }}
+                            />
+                          ))}
+                        </div>
+                        
+                        <motion.button 
+                          className="p-2 rounded-full bg-[#8bccc2]/20 hover:bg-[#8bccc2]/30 transition-colors"
+                          onClick={onNextIllness}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                          transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          <ChevronRight className="w-5 h-5 text-[#8bccc2]" />
+                        </motion.button>
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* Shop Now Button */}
                   <Link href="/eubiosis-bottle/size-s/quantity-1">
                     <motion.button 
                       className="btn"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
+                      transition={{ duration: 0.6, delay: 1.6, ease: "easeOut" }}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                     >
                       SHOP NOW
                     </motion.button>
                   </Link>
+                  
+                  {/* Show Learn More button only when NOT cycling (single illness selected) */}
+                  {!cycling && (
+                    <motion.button 
+                      className="btn-secondary"
+                      onClick={onLearnMoreClick}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      LEARN MORE
+                    </motion.button>
+                  )}
+                  
+                  {/* Back Home Button */}
                   <motion.button 
-                    className="btn"
+                    className="btn-secondary"
                     onClick={onResetToHero}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.6, delay: 1.6, ease: "easeOut" }}
+                    transition={{ duration: 0.6, delay: cycling ? 1.8 : 2.0, ease: "easeOut" }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Back
+                    BACK HOME
                   </motion.button>
                 </div>
               </motion.div>

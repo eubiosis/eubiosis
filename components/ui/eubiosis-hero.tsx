@@ -11,7 +11,7 @@ interface Ripple {
   y: number;
 }
 
-const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (illness: string) => void; onBrowsingClick?: () => void }) => {
+const EubiosisHero = ({ onIllnessClick, onBrowsingClick, onLearnMoreClick }: { onIllnessClick?: (illness: string) => void; onBrowsingClick?: () => void; onLearnMoreClick?: () => void }) => {
   const [mouseGradientStyle, setMouseGradientStyle] = useState({
     left: '0px',
     top: '0px',
@@ -332,8 +332,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
             }}
           >
             
-            {/* Left Column - Text Content */}
-            <div className="text-left relative">
+            <div className="text-left relative pt-10">
               {/* Top tagline */}
               <div className="mb-6 mt-8 relative">
                 <h2 className="text-lg sm:text-xl md:text-2xl font-mono font-medium text-white uppercase tracking-[0.3em] opacity-90">
@@ -360,43 +359,26 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                 </div>
               </h1>
 
-              {/* Interactive Split Text */}
-              <div className="mb-6 opacity-0" style={{ animation: 'word-appear 1s ease-out forwards', animationDelay: '3.8s' }}>
-                <div className="text-2xl sm:text-3xl md:text-4xl font-light text-white/90">
-                  <TextSplit
-                    className=""
-                    topClassName="text-white/90"
-                    bottomClassName="text-white/60"
-                    maxMove={80}
-                    falloff={0.2}
-                    autoDemo={true}
-                    autoDemoDelay={2000}
-                    align="left"
-                  >
-                    Nature in a bottle
-                  </TextSplit>
-                </div>
-              </div>
 
               {/* Illness Buttons - Desktop: Grid, Mobile: Dropdown */}
               <div className="mt-8 w-full">
                 {/* Desktop: Show all buttons in grid */}
-                <div className="hidden lg:grid lg:grid-cols-4 gap-4 mb-4">
-                  <button
-                    key="Diabetes"
-                    onClick={() => onIllnessClick?.('Diabetes')}
-                    className="btn-diabetes"
-                    style={{ fontSize: '14px' }}
-                  >
-                    Diabetes
-                  </button>
+                <div className="hidden lg:flex lg:flex-wrap gap-4 mb-4">
                   <button
                     key="IBS"
                     onClick={() => onIllnessClick?.('IBS')}
-                    className="btn-ibs"
+                    className="btn-diabetes"
                     style={{ fontSize: '14px' }}
                   >
                     IBS
+                  </button>
+                  <button
+                    key="Diabetes"
+                    onClick={() => onIllnessClick?.('Diabetes')}
+                    className="btn-ibs"
+                    style={{ fontSize: '14px' }}
+                  >
+                    Diabetes
                   </button>
                   <button
                     key="Anxiety"
@@ -428,21 +410,13 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     className="btn-digestive"
                     style={{ fontSize: '14px' }}
                   >
-                    Digestive Issues
-                  </button>
-                  <button
-                    key="Skin Conditions"
-                    onClick={() => onIllnessClick?.('Skin Conditions')}
-                    className="btn-skin"
-                    style={{ fontSize: '14px' }}
-                  >
-                    Skin Conditions
+                    Digestive
                   </button>
                   <button
                     key="Just Browsing"
                     onClick={() => onBrowsingClick?.()}
                     className="btn-browsing"
-                    style={{ fontSize: '14px' }}
+                    style={{ gridColumn: 'span 1' }}
                   >
                     Just Browsing
                   </button>
@@ -480,13 +454,12 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                   >
                     <div className="grid grid-cols-2 gap-2 mt-3">
                       {[
-                        { name: 'Diabetes', className: 'btn-diabetes' },
-                        { name: 'IBS', className: 'btn-ibs' },
+                      { name: 'IBS', className: 'btn-diabetes' },
+                        { name: 'Diabetes', className: 'btn-ibs' },
                         { name: 'Anxiety', className: 'btn-anxiety' },
                         { name: 'Depression', className: 'btn-depression' },
                         { name: 'Autoimmune', className: 'btn-autoimmune' },
                         { name: 'Digestive Issues', className: 'btn-digestive' },
-                        { name: 'Skin Conditions', className: 'btn-skin' },
                         { name: 'Just Browsing', className: 'btn-browsing' }
                       ].map((button, index) => (
                         <motion.button
@@ -519,7 +492,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
 
               {/* Additional Action Buttons */}
               <div className="mt-6 flex justify-start gap-4">
-                <button className="btn-secondary">
+                <button className="btn-secondary" onClick={onLearnMoreClick}>
                   LEARN MORE
                 </button>
                 <Link href="/eubiosis-bottle/size-s/quantity-1">

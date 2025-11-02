@@ -237,6 +237,22 @@
 }
 
 /* Secondary button - white background, blue on hover */
+.btn-browsing {
+ background: linear-gradient(135deg, #6B7280, #4B5563);
+ color: #fff;
+ padding: 12px 24px;
+ border-radius: 15px;
+ border: 2px solid #6B7280;
+ font-weight: 600;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ position: relative;
+ overflow: hidden;
+ font-size: 18px;
+}
+
 .btn-secondary {
  background-color: #fff;
  padding: 14px 40px;
@@ -274,18 +290,25 @@
 .btn-digestive,
 .btn-skin,
 .btn-browsing {
- background: linear-gradient(135deg, #4ECDC4, #44A08D);
- color: #fff;
- padding: 12px 24px;
- border-radius: 15px;
- border: 2px solid #4ECDC4;
- font-weight: 600;
+ padding: 1em 2em;
+ border: none;
+ border-radius: 5px;
+ font-weight: bold;
+ letter-spacing: 5px;
  text-transform: uppercase;
- letter-spacing: 1px;
  cursor: pointer;
- transition: all 0.3s ease;
+ color: #8bccc2;
+ transition: all 1000ms;
+ font-family: 'Futura', 'Trebuchet MS', 'Arial Narrow', sans-serif;
+ font-size: 15px;
  position: relative;
  overflow: hidden;
+ outline: 2px solid #8bccc2;
+ background: white;
+} 
+
+.btn-browsing {
+ font-size: 15px;
 }
 
 .btn-diabetes::before,
@@ -296,14 +319,16 @@
 .btn-digestive::before,
 .btn-skin::before,
 .btn-browsing::before {
- content: '';
+ content: "";
  position: absolute;
+ left: -50px;
  top: 0;
- left: -100%;
- width: 100%;
+ width: 0;
  height: 100%;
- background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
- transition: left 0.5s;
+ background-color: #8bccc2;
+ transform: skewX(45deg);
+ z-index: -1;
+ transition: width 1000ms;
 }
 
 .btn-diabetes:hover::before,
@@ -314,7 +339,7 @@
 .btn-digestive:hover::before,
 .btn-skin:hover::before,
 .btn-browsing:hover::before {
- left: 100%;
+ width: 250%;
 }
 
 .btn-diabetes:hover,
@@ -325,23 +350,12 @@
 .btn-digestive:hover,
 .btn-skin:hover,
 .btn-browsing:hover {
- transform: scale(1.05);
- border-color: #44A08D;
+ color: #ffffff;
+ transform: scale(1.1);
+ outline: 2px solid #78b4aa;
+ box-shadow: 4px 5px 17px -4px #268391;
 }
 
-.btn-diabetes:active,
-.btn-ibs:active,
-.btn-anxiety:active,
-.btn-depression:active,
-.btn-autoimmune:active,
-.btn-digestive:active,
-.btn-skin:active,
-.btn-browsing:active {
- transform: scale(0.95);
- transition: transform 0.1s ease;
- box-shadow: 0 0 30px rgba(78, 205, 196, 0.8);
- border-color: #4ECDC4;
-}
 
 /* Gooey Button Styles - Exact CodePen */
 @property --a {

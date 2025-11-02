@@ -23,6 +23,9 @@ export default function Home() {
   // Add state for view mode
   const [viewMode, setViewMode] = useState<'hero-only' | 'illness-selected' | 'browsing'>('hero-only');
   const [selectedIllness, setSelectedIllness] = useState<string | null>(null);
+  const [cycling, setCycling] = useState(false);
+  
+  const illnesses = ['IBS', 'Diabetes', 'Anxiety', 'Depression', 'Autoimmune', 'Digestive Issues'];
   
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id)
@@ -30,16 +33,47 @@ export default function Home() {
   }
 
   const handleIllnessClick = (illness: string) => {
+    setCycling(false);
     setSelectedIllness(illness);
     setViewMode('illness-selected');
   }
 
   const handleBrowsingClick = () => {
-    setSelectedIllness(null);
-    setViewMode('browsing');
+    setCycling(true);
+    setSelectedIllness(illnesses[0]);
+    setViewMode('illness-selected');
   }
 
+  const handleLearnMoreClick = () => {
+    setViewMode('browsing');
+    setSelectedIllness(null);
+  }
+
+  const handlePrevIllness = () => {
+    setSelectedIllness(prev => {
+      if (prev === null) return illnesses[0];
+      const currentIndex = illnesses.indexOf(prev);
+      const prevIndex = (currentIndex - 1 + illnesses.length) % illnesses.length;
+      return illnesses[prevIndex];
+    });
+  };
+
+  const handleNextIllness = () => {
+    setSelectedIllness(prev => {
+      if (prev === null) return illnesses[0];
+      const currentIndex = illnesses.indexOf(prev);
+      const nextIndex = (currentIndex + 1) % illnesses.length;
+      return illnesses[nextIndex];
+    });
+  };
+
+  const handleDirectIllnessChange = (illnessName: string) => {
+    setCycling(false);
+    setSelectedIllness(illnessName);
+  };
+
   const handleResetToHero = () => {
+    setCycling(false);
     setViewMode('hero-only');
     setSelectedIllness(null);
     setHasScrolled(false); // Reset scroll state when going back to hero
@@ -176,6 +210,32 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    const handleDirectChange = (event: CustomEvent) => {
+      handleDirectIllnessChange(event.detail);
+    };
+    
+    window.addEventListener('changeIllness', handleDirectChange as EventListener);
+    
+    return () => {
+      window.removeEventListener('changeIllness', handleDirectChange as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (cycling) {
+      const interval = setInterval(() => {
+        setSelectedIllness(prev => {
+          if (prev === null) return illnesses[0];
+          const currentIndex = illnesses.indexOf(prev);
+          const nextIndex = (currentIndex + 1) % illnesses.length;
+          return illnesses[nextIndex];
+        });
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [cycling, illnesses]);
+
   return (
     <main>
       <AnimatePresence mode="wait">
@@ -200,12 +260,12 @@ export default function Home() {
             <div className="absolute inset-0 bg-black/40 z-0"></div>
             
             {/* Hero Section */}
-            <EubiosisHero onIllnessClick={handleIllnessClick} onBrowsingClick={handleBrowsingClick} />
+            <EubiosisHero onIllnessClick={handleIllnessClick} onBrowsingClick={handleBrowsingClick} onLearnMoreClick={handleLearnMoreClick} />
           </motion.section>
         )}
         
-        {/* What is Eubiosis - Show when illness selected or browsing */}
-        {(viewMode === 'illness-selected' || viewMode === 'browsing') && (
+        {/* What is Eubiosis - Show when illness selected */}
+        {viewMode === 'illness-selected' && (
           <motion.div
             key="features"
             initial={{ opacity: 0, x: 100 }}
@@ -224,7 +284,7 @@ export default function Home() {
             }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <EubiosisFeatures illness={selectedIllness} onBrowsingClick={handleBrowsingClick} onResetToHero={handleResetToHero} />
+            <EubiosisFeatures illness={selectedIllness} onBrowsingClick={handleBrowsingClick} onResetToHero={handleResetToHero} onPrevIllness={handlePrevIllness} onNextIllness={handleNextIllness} onLearnMoreClick={handleLearnMoreClick} cycling={cycling} />
           </motion.div>
         )}
 
