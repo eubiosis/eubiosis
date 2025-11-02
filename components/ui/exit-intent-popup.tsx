@@ -46,7 +46,7 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -66,7 +66,7 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
           </svg>
 
           <motion.div 
-            className="relative max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className="relative max-w-4xl w-full max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl overflow-hidden"
             initial={{ scale: 0.8, y: 50, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.8, y: 50, opacity: 0 }}
@@ -90,10 +90,10 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
               <X className="w-6 h-6 text-gray-600" />
             </motion.button>
 
-            <div className="grid lg:grid-cols-2 min-h-[400px]">
+            <div className="flex flex-col lg:grid lg:grid-cols-2 min-h-[400px] lg:min-h-[500px]">
               {/* Left Side - Content */}
               <motion.div 
-                className="p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-gray-50"
+                className="p-6 sm:p-8 lg:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-gray-50"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2, duration: 0.5 }}
@@ -114,7 +114,7 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
                     Wait! Don't leave yet...
                   </motion.div>
                   <motion.h2 
-                    className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
+                    className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
@@ -123,7 +123,7 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
                     <span className="text-[#4AAE9B]"> 15% OFF</span>
                   </motion.h2>
                   <motion.p 
-                    className="text-lg text-gray-600 leading-relaxed"
+                    className="text-base sm:text-lg text-gray-600 leading-relaxed"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.5 }}
@@ -168,7 +168,7 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
 
               {/* Right Side - Product Image */}
               <motion.div 
-                className="relative bg-gradient-to-br from-[#4AAE9B]/10 to-[#3d9585]/10 flex items-center justify-center p-8"
+                className="relative bg-gradient-to-br from-[#4AAE9B]/10 to-[#3d9585]/10 flex items-center justify-center p-6 sm:p-8 lg:p-8 min-h-[300px] lg:min-h-[400px]"
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
@@ -192,9 +192,9 @@ export function ExitIntentPopup({ isOpen, onClose }: ExitIntentPopupProps) {
                   <Image
                     src="/images/bottles/bottle-combo.png"
                     alt="Eubiosis Probiotic Bottles"
-                    width={280}
-                    height={320}
-                    className="drop-shadow-2xl"
+                    width={200}
+                    height={240}
+                    className="sm:w-[280px] sm:h-[320px] drop-shadow-2xl"
                     priority
                   />
                   

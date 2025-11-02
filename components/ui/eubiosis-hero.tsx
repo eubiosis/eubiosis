@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TextSplit } from './split-text';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 
 interface Ripple {
   id: number;
@@ -18,6 +20,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const floatingElementsRef = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
@@ -269,8 +272,65 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
         {/* Responsive Main Content Padding */}
         <div className="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 py-10 sm:px-8 sm:py-12 md:px-16 md:py-20 mt-0 sm:-mt-20">
           
+          {/* Mobile Product Image - Shows at top on mobile */}
+          <motion.div 
+            className="lg:hidden w-full max-w-sm h-[250px] sm:h-[300px] flex items-center justify-center relative"
+            animate={{ 
+              opacity: isDropdownOpen ? 0 : 1,
+              scale: isDropdownOpen ? 0.95 : 1,
+              y: isDropdownOpen ? -20 : 0,
+              height: isDropdownOpen ? 0 : 'auto',
+              marginBottom: isDropdownOpen ? 0 : '1rem'
+            }}
+            transition={{ 
+              duration: 0.5,
+              ease: [0.25, 0.46, 0.45, 0.94],
+              opacity: { duration: 0.3 },
+              height: { duration: 0.4 },
+              marginBottom: { duration: 0.4 }
+            }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+            >
+              <Image
+                src="/images/bottles/bottle-combo.png"
+                alt="Eubiosis Bottle Combo"
+                width={300}
+                height={250}
+                className="w-full h-full object-contain relative z-10 drop-shadow-2xl"
+                priority
+              />
+              {/* Mobile shadow and glow */}
+              <motion.div 
+                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-2/3 h-6 bg-black/15 rounded-full blur-lg"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+              />
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-br from-[#8bccc2]/8 via-transparent to-transparent rounded-full blur-2xl"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.2, delay: 0.5, ease: "easeOut" }}
+              />
+            </motion.div>
+          </motion.div>
+          
           {/* Two Column Layout */}
-          <div className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 lg:gap-16 items-center">
+          <motion.div 
+            className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 lg:gap-16 items-center"
+            animate={{
+              y: isDropdownOpen ? -120 : 0 // Move up by approximately the image height on mobile
+            }}
+            transition={{ 
+              duration: 0.5,
+              ease: [0.25, 0.46, 0.45, 0.94],
+              delay: isDropdownOpen ? 0.1 : 0 // Small delay when moving up
+            }}
+          >
             
             {/* Left Column - Text Content */}
             <div className="text-left relative">
@@ -318,9 +378,10 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                 </div>
               </div>
 
-              {/* Illness Buttons */}
+              {/* Illness Buttons - Desktop: Grid, Mobile: Dropdown */}
               <div className="mt-8 w-full">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
+                {/* Desktop: Show all buttons in grid */}
+                <div className="hidden lg:grid lg:grid-cols-4 gap-2 mb-4">
                   <button
                     key="Diabetes"
                     onClick={() => onIllnessClick?.('Diabetes')}
@@ -378,10 +439,78 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     Just Browsing
                   </button>
                 </div>
+
+                {/* Mobile: Dropdown trigger */}
+                <div className="lg:hidden mb-4">
+                  <motion.button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-full bg-gradient-to-r from-[#4AAE9B]/20 to-[#3d9585]/20 border border-[#4AAE9B]/30 text-white px-6 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:from-[#4AAE9B]/30 hover:to-[#3d9585]/30 transition-all duration-300"
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span>Choose Your Health Concern</span>
+                    <motion.div
+                      animate={{ rotate: isDropdownOpen ? 180 : 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ChevronDown className="w-5 h-5" />
+                    </motion.div>
+                  </motion.button>
+
+                  {/* Mobile dropdown content */}
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ 
+                      height: isDropdownOpen ? 'auto' : 0,
+                      opacity: isDropdownOpen ? 1 : 0 
+                    }}
+                    transition={{ 
+                      duration: 0.4,
+                      ease: [0.25, 0.46, 0.45, 0.94],
+                      opacity: { duration: 0.2 }
+                    }}
+                    className="overflow-hidden"
+                  >
+                    <div className="grid grid-cols-2 gap-2 mt-3">
+                      {[
+                        { name: 'Diabetes', className: 'btn-diabetes' },
+                        { name: 'IBS', className: 'btn-ibs' },
+                        { name: 'Anxiety', className: 'btn-anxiety' },
+                        { name: 'Depression', className: 'btn-depression' },
+                        { name: 'Autoimmune', className: 'btn-autoimmune' },
+                        { name: 'Digestive Issues', className: 'btn-digestive' },
+                        { name: 'Skin Conditions', className: 'btn-skin' },
+                        { name: 'Just Browsing', className: 'btn-browsing' }
+                      ].map((button, index) => (
+                        <motion.button
+                          key={button.name}
+                          onClick={() => {
+                            if (button.name === 'Just Browsing') {
+                              onBrowsingClick?.();
+                            } else {
+                              onIllnessClick?.(button.name);
+                            }
+                            setIsDropdownOpen(false);
+                          }}
+                          className={button.className}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ 
+                            delay: index * 0.05,
+                            duration: 0.3,
+                            ease: "easeOut"
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          {button.name}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+                </div>
               </div>
 
               {/* Additional Action Buttons */}
-              <div className="mt-6 flex justify-center gap-4">
+              <div className="mt-6 flex justify-start gap-4">
                 <button className="btn-secondary">
                   LEARN MORE
                 </button>
@@ -398,21 +527,50 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
 
             {/* Right Column - Product Image */}
             <div className="hidden lg:flex justify-center items-center">
-              <div className="w-full max-w-lg h-[500px] flex items-center justify-center relative">
-                <Image
-                  src="/images/bottles/bottle-combo.png"
-                  alt="Eubiosis Bottle Combo"
-                  width={500}
-                  height={500}
-                  className="w-full h-full object-contain relative z-10"
-                  priority
+              <motion.div 
+                className="w-full max-w-lg h-[500px] flex items-center justify-center relative"
+                initial={{ opacity: 0, x: 100, scale: 0.9, rotateY: 15 }}
+                animate={{ opacity: 1, x: 0, scale: 1, rotateY: 0 }}
+                transition={{ 
+                  duration: 1.2, 
+                  delay: 0.8, 
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                  type: "spring",
+                  stiffness: 100
+                }}
+              >
+                <motion.div
+                  initial={{ y: 20 }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.8, delay: 1.5, ease: "easeOut" }}
+                >
+                  <Image
+                    src="/images/bottles/bottle-combo.png"
+                    alt="Eubiosis Bottle Combo"
+                    width={500}
+                    height={500}
+                    className="w-full h-full object-contain relative z-10 drop-shadow-2xl"
+                    priority
+                  />
+                </motion.div>
+                {/* Shadow underneath with animation */}
+                <motion.div 
+                  className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-3/4 h-8 bg-black/20 rounded-full blur-xl"
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
                 />
-                {/* Shadow underneath */}
-                <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 w-3/4 h-8 bg-black/20 rounded-full blur-xl"></div>
-              </div>
+                {/* Ambient glow effect */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-br from-[#8bccc2]/10 via-transparent to-transparent rounded-full blur-3xl"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1.5, delay: 1.2, ease: "easeOut" }}
+                />
+              </motion.div>
             </div>
 
-          </div>
+          </motion.div>
         </div>
 
         {/* Responsive Mouse Gradient */}

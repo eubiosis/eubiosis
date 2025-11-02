@@ -17,6 +17,9 @@ import { productSchema } from '@/lib/seo'
 export default function Home() {
   const { ExitIntentPopup } = useExitIntent();
   
+  // Add scroll state for bottom nav visibility
+  const [hasScrolled, setHasScrolled] = useState(false);
+  
   // Add state for view mode
   const [viewMode, setViewMode] = useState<'hero-only' | 'illness-selected' | 'browsing'>('hero-only');
   const [selectedIllness, setSelectedIllness] = useState<string | null>(null);
@@ -37,9 +40,11 @@ export default function Home() {
   }
 
   const handleResetToHero = () => {
-    setSelectedIllness(null);
     setViewMode('hero-only');
-  }
+    setSelectedIllness(null);
+    setHasScrolled(false); // Reset scroll state when going back to hero
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const benefits = [
     {
@@ -149,6 +154,17 @@ export default function Home() {
     // Check for dev tools periodically
     const devToolsInterval = setInterval(checkDevTools, 1000);
 
+    // Handle scroll for bottom nav visibility
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setHasScrolled(true);
+      } else {
+        setHasScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
     return () => {
       document.querySelectorAll('.gooey-btn').forEach(button => {
         button.removeEventListener('pointermove', moveBg as EventListener)
@@ -156,6 +172,7 @@ export default function Home() {
       })
       if (x) clearInterval(x)
       clearInterval(devToolsInterval);
+      window.removeEventListener('scroll', handleScroll);
     }
   }, [])
 
@@ -370,8 +387,10 @@ export default function Home() {
       {/* Exit Intent Popup */}
       <ExitIntentPopup />
 
-      {/* Bottom Navigation */}
-      <BottomNav viewMode={viewMode} onResetToHero={handleResetToHero} illness={selectedIllness} />
+      {/* Bottom Navigation - Only show when scrolled, regardless of view mode */}
+      {hasScrolled && (
+        <BottomNav viewMode={viewMode} onResetToHero={handleResetToHero} illness={selectedIllness} />
+      )}
 
       {/* Product Structured Data for SEO */}
       <script
