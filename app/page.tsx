@@ -113,7 +113,7 @@ export default function Home() {
               );
             });
             i+= 0.03;
-            if( i > 11.5 ) {
+            if ( i > 11.5 ) {
                 clearInterval(x);
                 buttons.forEach($b => {
                   ($b as HTMLElement).style.setProperty( "--a", '' );
@@ -129,12 +129,45 @@ export default function Home() {
       });
     });
 
+    // Disable right click
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      return false;
+    };
+
+    // Add console message when dev tools are opened
+    const checkDevTools = () => {
+      if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
+        console.clear();
+        console.log('%cEUBIOSIS', 'font-size: 72px; font-weight: bold; color: #8bccc2; text-align: center; margin: 20px;');
+        console.log('%cWelcome to Eubiosis! 🌱', 'font-size: 24px; color: #78b4aa; text-align: center; margin: 10px;');
+        console.log('%cGut Health. Real Results.', 'font-size: 18px; color: #666; text-align: center; margin: 10px;');
+      }
+    };
+
+    document.addEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.key === 'u')) {
+        e.preventDefault();
+        console.clear();
+        console.log('%cEUBIOSIS', 'font-size: 72px; font-weight: bold; color: #8bccc2; text-align: center; margin: 20px;');
+        console.log('%cWelcome to Eubiosis! 🌱', 'font-size: 24px; color: #78b4aa; text-align: center; margin: 10px;');
+        console.log('%cGut Health. Real Results.', 'font-size: 18px; color: #666; text-align: center; margin: 10px;');
+        return false;
+      }
+    });
+
+    // Check for dev tools periodically
+    const devToolsInterval = setInterval(checkDevTools, 1000);
+
     return () => {
       document.querySelectorAll('.gooey-btn').forEach(button => {
         button.removeEventListener('pointermove', moveBg as EventListener)
         button.removeEventListener('pointerover', () => {})
       })
       if (x) clearInterval(x)
+      document.removeEventListener('contextmenu', handleContextMenu);
+      clearInterval(devToolsInterval);
     }
   }, [])
 
@@ -377,7 +410,7 @@ export default function Home() {
       <ExitIntentPopup />
 
       {/* Bottom Navigation */}
-      <BottomNav viewMode={viewMode} onResetToHero={handleResetToHero} />
+      <BottomNav viewMode={viewMode} onResetToHero={handleResetToHero} illness={selectedIllness} />
 
       {/* Product Structured Data for SEO */}
       <script

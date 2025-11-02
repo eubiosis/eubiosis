@@ -8,9 +8,10 @@ import { useState, useEffect } from 'react'
 interface BottomNavProps {
   viewMode?: 'hero-only' | 'illness-selected' | 'browsing'
   onResetToHero?: () => void
+  illness?: string | null
 }
 
-export default function BottomNav({ viewMode, onResetToHero }: BottomNavProps) {
+export default function BottomNav({ viewMode, onResetToHero, illness }: BottomNavProps) {
   const router = useRouter()
   const pathname = usePathname()
   const [isVisible, setIsVisible] = useState(false)
@@ -49,8 +50,8 @@ export default function BottomNav({ viewMode, onResetToHero }: BottomNavProps) {
   useEffect(() => {
     // Show/hide nav based on view mode and page
     if (pathname === '/') {
-      // Hide nav in hero-only mode or when viewMode is undefined (initial state)
-      if (viewMode === 'hero-only' || !viewMode) {
+      // Hide nav in hero-only mode, when illness is selected, or when viewMode is undefined (initial state)
+      if (viewMode === 'hero-only' || viewMode === 'illness-selected' || illness || !viewMode) {
         setIsVisible(false)
       } else {
         setIsVisible(true)
@@ -92,7 +93,7 @@ export default function BottomNav({ viewMode, onResetToHero }: BottomNavProps) {
       // Show nav immediately on other pages (like funnel)
       setIsVisible(true)
     }
-  }, [pathname, viewMode])
+  }, [pathname, viewMode, illness])
 
   const dockItems = [
     {

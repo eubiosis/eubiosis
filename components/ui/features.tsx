@@ -594,7 +594,12 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
 
         <div className="grid lg:grid-cols-2 lg:gap-16 gap-8 items-start">
           {/* Left Side - Scrollable Content */}
-          <div className="space-y-6">
+          <motion.div 
+            className="space-y-6"
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          >
             {/* Scrollable Content Container */}
             <div className="h-[390px] overflow-y-auto pr-4 space-y-6 scrollbar-thin scrollbar-thumb-[#8bccc2] scrollbar-track-gray-100 scrollbar-w-2">
               
@@ -604,17 +609,22 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                 const isActive = currentFeature === index;
 
                 return (
-                  <div
+                  <motion.div
                     key={feature.id}
-                    className={`
-                      cursor-pointer p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg
-                      ${isActive 
-                        ? 'bg-gradient-to-br from-[#8bccc2]/10 to-[#78b4aa]/10 border-[#8bccc2]/30 shadow-md' 
-                        : 'bg-white border-gray-200 hover:border-[#8bccc2]/20'
-                      }
-                    `}
-                    onClick={() => handleFeatureClick(index)}
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                    transition={{ duration: 0.6, delay: 0.6 + (index * 0.1), ease: "easeOut" }}
                   >
+                    <div
+                      className={`
+                        cursor-pointer p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg
+                        ${isActive 
+                          ? 'bg-gradient-to-br from-[#8bccc2]/10 to-[#78b4aa]/10 border-[#8bccc2]/30 shadow-md' 
+                          : 'bg-white border-gray-200 hover:border-[#8bccc2]/20'
+                        }
+                      `}
+                      onClick={() => handleFeatureClick(index)}
+                    >
                     <div className="flex items-start space-x-4">
                       <div className={`
                         p-3 rounded-full flex-shrink-0 transition-all duration-300
@@ -661,11 +671,17 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                       </div>
                     </div>
                   </div>
+                  </motion.div>
                 );
               })}
 
               {/* Additional Content Cards */}
-              <div className="bg-gradient-to-br from-[#8bccc2]/5 to-[#78b4aa]/5 p-6 rounded-2xl border border-[#8bccc2]/10">
+              <motion.div 
+                className="bg-gradient-to-br from-[#8bccc2]/5 to-[#78b4aa]/5 p-6 rounded-2xl border border-[#8bccc2]/10"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+              >
                 <h4 className="text-lg font-semibold text-gray-900 mb-3">Why Choose Eubiosis?</h4>
                 <ul className="space-y-2 text-gray-600">
                   <li className="flex items-center space-x-2">
@@ -685,10 +701,15 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                     <span>Third-party tested for purity</span>
                   </li>
                 </ul>
-              </div>
+              </motion.div>
 
               {/* Scientific Backing Card */}
-              <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+              <motion.div 
+                className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: 1.0, ease: "easeOut" }}
+              >
                 <h4 className="text-lg font-semibold text-gray-900 mb-3">Scientific Research</h4>
                 <p className="text-gray-600 text-sm leading-relaxed mb-4">
                   Our formula is backed by extensive research on the gut microbiome and its impact on overall health. 
@@ -698,10 +719,15 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                   <span>📚</span>
                   <span>Based on 50+ peer-reviewed studies</span>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Customer Success Card */}
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl border border-green-200">
+              <motion.div 
+                className="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl border border-green-200"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
+              >
                 <h4 className="text-lg font-semibold text-gray-900 mb-3">Customer Success</h4>
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
@@ -713,10 +739,10 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                     <div className="text-sm text-gray-600">Average Results</div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Side - Quiz + Video Side by Side */}
           {illness ? (
@@ -725,16 +751,40 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                 {/* Quiz Section - Left Side */}
                 <div className="flex-1 bg-gradient-to-br from-[#8bccc2] to-[#78b4aa] rounded-2xl border border-gray-200 dark:border-gray-700 p-6 text-center h-[280px] relative">
                   {!showQuiz ? (
-                    <>
-                      <h3 className="text-white text-xl font-semibold mb-4">Quick Quiz: {illness}</h3>
-                      <p className="text-white/80 text-sm mb-4">Take our quick assessment to understand how Eubiosis can help with {illness.toLowerCase()}.</p>
-                      <button 
-                        onClick={handleQuizStart}
-                        className="btn-secondary"
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
+                    >
+                      <motion.h3 
+                        className="text-white text-xl font-semibold mb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                        transition={{ duration: 0.6, delay: 1.0, ease: "easeOut" }}
                       >
-                        Start Quiz
-                      </button>
-                    </>
+                        Quick Quiz: {illness}
+                      </motion.h3>
+                      <motion.p 
+                        className="text-white/80 text-sm mb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                        transition={{ duration: 0.6, delay: 1.1, ease: "easeOut" }}
+                      >
+                        Take our quick assessment to understand how Eubiosis can help with {illness.toLowerCase()}.
+                      </motion.p>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                        transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
+                      >
+                        <button 
+                          onClick={handleQuizStart}
+                          className="btn-secondary"
+                        >
+                          Start Quiz
+                        </button>
+                      </motion.div>
+                    </motion.div>
                   ) : (
                     <div className="text-left h-full flex flex-col">
                       {!quizCompleted ? (
@@ -1010,15 +1060,49 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                 </div>
               </div>
 
-              {/* Just Browsing Button */}
-              <div className="text-center mt-4">
-                <button 
-                  className="btn"
-                  onClick={onBrowsingClick}
-                >
-                  Just Browsing
-                </button>
-              </div>
+              {/* Action Buttons */}
+              <motion.div 
+                className="text-center mt-6 space-y-4"
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.8, delay: 1.0, ease: "easeOut" }}
+              >
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <motion.button 
+                    className="btn"
+                    onClick={onBrowsingClick}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Just Browsing
+                  </motion.button>
+                  <motion.button 
+                    className="btn"
+                    onClick={() => window.location.href = '/eubiosis-bottle/size-s/quantity-1'}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    SHOP NOW
+                  </motion.button>
+                  <motion.button 
+                    className="btn"
+                    onClick={() => window.location.reload()}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.6, delay: 1.6, ease: "easeOut" }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Back
+                  </motion.button>
+                </div>
+              </motion.div>
             </div>
           ) : (
             <div className="relative order-1 w-full max-w-full mx-auto lg:order-2">

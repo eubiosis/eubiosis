@@ -250,7 +250,7 @@ export default function EubiosisBottle({ params }: PageProps) {
   }
 
   return (
-    <main>
+    <main className="scroll-smooth" style={{ willChange: 'scroll-position' }}>
       {/* Product Display Section */}
       <motion.section 
         ref={productSectionRef}
@@ -259,8 +259,7 @@ export default function EubiosisBottle({ params }: PageProps) {
           backgroundImage: 'url(/images/hero%20bg.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundAttachment: 'fixed'
+          backgroundRepeat: 'no-repeat'
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
