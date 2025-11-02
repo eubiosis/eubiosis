@@ -273,26 +273,26 @@ export default function Home() {
             initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 20 }}
             animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
             exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
-            transition={{ 
-              duration: 1.2, 
-              delay: 0.6, 
+            transition={{
+              duration: 1.2,
+              delay: 0.6,
               ease: [0.25, 0.46, 0.45, 0.94],
               type: "spring",
               stiffness: 80
             }}
-            className="py-2 px-4" 
+            className="w-full py-2"
             style={{ backgroundColor: '#fefefc' }}
           >
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-16">
               {/* Header Section */}
-              <motion.div 
-                className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-8"
+              <motion.div
+                className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-8 max-w-7xl mx-auto"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 {/* Left Side - Heading */}
-                <motion.div 
+                <motion.div
                   className="text-left"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -307,7 +307,7 @@ export default function Home() {
                 </motion.div>
 
                 {/* Middle - Separator Line */}
-                <motion.div 
+                <motion.div
                   className="hidden lg:flex justify-center"
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: 1, scaleX: 1 }}
@@ -320,7 +320,7 @@ export default function Home() {
                 </motion.div>
 
                 {/* Right Side - Description */}
-                <motion.div 
+                <motion.div
                   className="text-left lg:text-right"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}

@@ -122,7 +122,7 @@ export default function EubiosisTestimonials() {
 
   return (
     <>
-      <div className="border border-border rounded-lg relative flex h-[500px] w-full max-w-[900px] mx-auto flex-row items-center justify-center overflow-hidden gap-1.5 [perspective:300px]">
+      <div className="relative flex h-[750px] w-full flex-row items-center justify-center overflow-hidden gap-1.5 [perspective:300px]">
         <div
           className="flex flex-row items-center gap-6"
           style={{
@@ -165,6 +165,26 @@ export default function EubiosisTestimonials() {
             {testimonials.map((testimonial) => (
               <TestimonialCard 
                 key={testimonial.username} 
+                testimonial={testimonial}
+                onClick={() => setSelectedTestimonial(testimonial)}
+              />
+            ))}
+          </Marquee>
+          {/* Vertical Marquee (downwards) - Second Row */}
+          <Marquee vertical pauseOnHover repeat={3} className="[--duration:45s]">
+            {testimonials.map((testimonial) => (
+              <TestimonialCard 
+                key={`${testimonial.username}-second`} 
+                testimonial={testimonial}
+                onClick={() => setSelectedTestimonial(testimonial)}
+              />
+            ))}
+          </Marquee>
+          {/* Vertical Marquee (upwards) - Second Row */}
+          <Marquee vertical pauseOnHover reverse repeat={3} className="[--duration:45s]">
+            {testimonials.map((testimonial) => (
+              <TestimonialCard 
+                key={`${testimonial.username}-second-up`} 
                 testimonial={testimonial}
                 onClick={() => setSelectedTestimonial(testimonial)}
               />
