@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Play, X, ChevronLeft, ChevronRight, ChevronDown, ArrowRight, RotateCcw } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // Quiz questions for each illness
 const quizQuestions = {
@@ -348,7 +349,7 @@ const illnessContent = {
   }
 };
 
-export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: string | null; onBrowsingClick?: () => void }) {
+export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero }: { illness?: string | null; onBrowsingClick?: () => void; onResetToHero?: () => void }) {
   const [currentFeature, setCurrentFeature] = useState(0);
   const [progress, setProgress] = useState(0);
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number | null>(null);
@@ -497,7 +498,7 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
   };
 
   return (
-    <div ref={sectionRef} className="min-h-screen py-8 px-4">
+    <div ref={sectionRef} className="min-h-screen py-8 px-4" style={{ backgroundColor: '#fefefc' }}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div 
@@ -1079,20 +1080,21 @@ export function EubiosisFeatures({ illness, onBrowsingClick }: { illness?: strin
                   >
                     Just Browsing
                   </motion.button>
+                  <Link href="/eubiosis-bottle/size-s/quantity-1">
+                    <motion.button 
+                      className="btn"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                      transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      SHOP NOW
+                    </motion.button>
+                  </Link>
                   <motion.button 
                     className="btn"
-                    onClick={() => window.location.href = '/eubiosis-bottle/size-s/quantity-1'}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    SHOP NOW
-                  </motion.button>
-                  <motion.button 
-                    className="btn"
-                    onClick={() => window.location.reload()}
+                    onClick={onResetToHero}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.6, delay: 1.6, ease: "easeOut" }}

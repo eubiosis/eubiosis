@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Heart, Zap, Shield, Sparkles, Droplet } from 'lucide-react'
-import { motion, useInView } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion';
 import { EubiosisFeatures } from '@/components/ui/eubiosis-features'
 import { BenefitGrid } from '@/components/ui/benefit-carousel'
 import { AnimatedKeyIngredients } from '@/components/ui/animated-key-ingredients'
@@ -16,10 +16,6 @@ import { productSchema } from '@/lib/seo'
 
 export default function Home() {
   const { ExitIntentPopup } = useExitIntent();
-  const howItWorksRef = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
-  const howItWorksInView = useInView(howItWorksRef, { once: true, amount: 0.3 });
-  const testimonialsInView = useInView(testimonialsRef, { once: true, amount: 0.3 });
   
   // Add state for view mode
   const [viewMode, setViewMode] = useState<'hero-only' | 'illness-selected' | 'browsing'>('hero-only');
@@ -129,12 +125,6 @@ export default function Home() {
       });
     });
 
-    // Disable right click
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-      return false;
-    };
-
     // Add console message when dev tools are opened
     const checkDevTools = () => {
       if (window.outerHeight - window.innerHeight > 200 || window.outerWidth - window.innerWidth > 200) {
@@ -145,7 +135,6 @@ export default function Home() {
       }
     };
 
-    document.addEventListener('contextmenu', handleContextMenu);
     document.addEventListener('keydown', (e) => {
       if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.shiftKey && e.key === 'C') || (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
@@ -166,32 +155,204 @@ export default function Home() {
         button.removeEventListener('pointerover', () => {})
       })
       if (x) clearInterval(x)
-      document.removeEventListener('contextmenu', handleContextMenu);
       clearInterval(devToolsInterval);
     }
   }, [])
 
   return (
     <main>
-      {/* Hero Section - Only show in hero-only and browsing modes */}
-      {(viewMode === 'hero-only' || viewMode === 'browsing') && (
-        <section 
-          className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-[#e8f4f8] to-white"
-          style={{
-            backgroundImage: 'url(/images/hero%20bg.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed'
-          }}
-        >
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40 z-0"></div>
-          
-          {/* Hero Section */}
-          <EubiosisHero onIllnessClick={handleIllnessClick} onBrowsingClick={handleBrowsingClick} />
-        </section>
-      )}
+      <AnimatePresence mode="wait">
+        {/* Hero Section - Only show in hero-only and browsing modes */}
+        {(viewMode === 'hero-only' || viewMode === 'browsing') && (
+          <motion.section
+            key="hero"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20, transition: { duration: 0.5 } }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative h-screen w-full overflow-hidden bg-gradient-to-b from-[#e8f4f8] to-white"
+            style={{
+              backgroundImage: 'url(/images/hero%20bg.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              backgroundAttachment: 'fixed'
+            }}
+          >
+            {/* Dark overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/40 z-0"></div>
+            
+            {/* Hero Section */}
+            <EubiosisHero onIllnessClick={handleIllnessClick} onBrowsingClick={handleBrowsingClick} />
+          </motion.section>
+        )}
+        
+        {/* What is Eubiosis - Show when illness selected or browsing */}
+        {(viewMode === 'illness-selected' || viewMode === 'browsing') && (
+          <motion.div
+            key="features"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ 
+              opacity: 0, 
+              x: -100, 
+              scale: 0.8,
+              rotateY: -15,
+              transition: { 
+                duration: 0.8, 
+                ease: [0.25, 0.46, 0.45, 0.94],
+                type: "spring",
+                stiffness: 100
+              } 
+            }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <EubiosisFeatures illness={selectedIllness} onBrowsingClick={handleBrowsingClick} onResetToHero={handleResetToHero} />
+          </motion.div>
+        )}
+
+        {/* Key Benefits - Only in browsing mode */}
+        {viewMode === 'browsing' && (
+          <motion.div
+            key="benefits"
+            initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 20 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+            transition={{ 
+              duration: 1.2, 
+              delay: 0.2, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 80
+            }}
+          >
+            <BenefitGrid benefits={benefits} />
+          </motion.div>
+        )}
+
+        {/* Key Ingredients - Only in browsing mode */}
+        {viewMode === 'browsing' && (
+          <motion.div
+            key="ingredients"
+            initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 20 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+            transition={{ 
+              duration: 1.2, 
+              delay: 0.4, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 80
+            }}
+          >
+            <AnimatedKeyIngredients />
+          </motion.div>
+        )}
+
+        {/* Testimonials - Only in browsing mode */}
+        {viewMode === 'browsing' && (
+          <motion.section
+            key="testimonials"
+            initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 20 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+            transition={{ 
+              duration: 1.2, 
+              delay: 0.6, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 80
+            }}
+            className="py-2 px-4" 
+            style={{ backgroundColor: '#fefefc' }}
+          >
+            <div className="max-w-7xl mx-auto">
+              {/* Header Section */}
+              <motion.div 
+                className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-8"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                {/* Left Side - Heading */}
+                <motion.div 
+                  className="text-left"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                >
+                  <span className="text-[#8bccc2] font-semibold text-sm uppercase tracking-wider block mb-4">
+                    Natural Gut Health. Real Results.
+                  </span>
+                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text">
+                    What Our Customers Say
+                  </h2>
+                </motion.div>
+
+                {/* Middle - Separator Line */}
+                <motion.div 
+                  className="hidden lg:flex justify-center"
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
+                >
+                  <div className="relative w-40 h-px">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8bccc2] to-transparent rounded-full"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#78b4aa] to-transparent rounded-full opacity-80"></div>
+                  </div>
+                </motion.div>
+
+                {/* Right Side - Description */}
+                <motion.div 
+                  className="text-left lg:text-right"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+                >
+                  <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
+                    Real stories from people who have transformed their gut health with Eubiosis
+                  </p>
+                </motion.div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+              >
+                <EubiosisTestimonials />
+              </motion.div>
+            </div>
+          </motion.section>
+        )}
+
+        {/* CTA Section - Only in browsing mode */}
+        {viewMode === 'browsing' && (
+          <motion.div
+            key="cta"
+            initial={{ opacity: 0, scale: 0.7, rotateY: 30 }}
+            animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.5 } }}
+            transition={{ 
+              duration: 1.4, 
+              delay: 0.8, 
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 60
+            }}
+            className="w-full"
+          >
+            <Image
+              src="/images/Website Banner.png"
+              alt="Start your journey to gut balance today"
+              width={1200}
+              height={500}
+              className="w-full h-auto object-cover"
+              priority={false}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* SVG Filter for Gooey Buttons - Exact CodePen */}
       <svg width="0" height="0" style={{ position: 'absolute' }}>
@@ -205,206 +366,6 @@ export default function Home() {
           </feComponentTransfer>
         </filter>
       </svg>
-
-      {/* What is Eubiosis - Show when illness selected or browsing */}
-      {(viewMode === 'illness-selected' || viewMode === 'browsing') && (
-        <EubiosisFeatures illness={selectedIllness} onBrowsingClick={handleBrowsingClick} />
-      )}
-
-      {/* Key Benefits */}
-      {viewMode === 'browsing' && (
-        <BenefitGrid benefits={benefits} />
-      )}
-
-      {/* Key Ingredients */}
-      {viewMode === 'browsing' && (
-        <AnimatedKeyIngredients />
-      )}
-
-      {/* How It Works */}
-      {viewMode === 'browsing' && (
-        <section ref={howItWorksRef} className="py-20 px-4 bg-[#f9f9f9]">
-          <div className="max-w-7xl mx-auto">
-            {/* Header Section */}
-            <motion.div 
-              className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-16"
-              initial={{ opacity: 0, y: 50 }}
-              animate={howItWorksInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              {/* Left Side - Heading */}
-              <motion.div 
-                className="text-left"
-                initial={{ opacity: 0, x: -50 }}
-                animate={howItWorksInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              >
-                <span className="text-[#8bccc2] font-semibold text-sm uppercase tracking-wider block mb-4">
-                  Natural Gut Health. Real Results.
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text">
-                  How It Works
-                </h2>
-              </motion.div>
-
-              {/* Middle - Separator Line */}
-              <motion.div 
-                className="hidden lg:flex justify-center"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={howItWorksInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 }}
-                transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-              >
-                <div className="relative w-40 h-px">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8bccc2] to-transparent rounded-full"></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#78b4aa] to-transparent rounded-full opacity-80"></div>
-                </div>
-              </motion.div>
-
-              {/* Right Side - Description */}
-              <motion.div 
-                className="text-left lg:text-right"
-                initial={{ opacity: 0, x: 50 }}
-                animate={howItWorksInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-                transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-              >
-                <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
-                  Discover the science behind our proven 4-step process for optimal gut health and wellness
-                </p>
-              </motion.div>
-            </motion.div>
-
-            <motion.div 
-              className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
-              initial={{ opacity: 0 }}
-              animate={howItWorksInView ? { opacity: 1 } : { opacity: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              {[
-                {
-                  number: "01",
-                  title: "Microbial Restoration",
-                  description: "42 beneficial strains colonize your gut, restoring natural balance."
-                },
-                {
-                  number: "02", 
-                  title: "Nutrient Activation",
-                  description: "Fulvic acid enhances absorption of vitamins and minerals."
-                },
-                {
-                  number: "03",
-                  title: "Immune Optimization", 
-                  description: "Strengthened gut barrier supports whole-body immunity."
-                },
-                {
-                  number: "04",
-                  title: "Long-Term Wellness",
-                  description: "Sustained use promotes lasting vitality and digestive health."
-                }
-              ].map((step, index) => (
-                <motion.div 
-                  key={index}
-                  className="card space-y-4"
-                  initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                  animate={howItWorksInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 50, scale: 0.9 }}
-                  transition={{ 
-                    duration: 0.6, 
-                    delay: 0.8 + (index * 0.15), 
-                    ease: "easeOut" 
-                  }}
-                  whileHover={{ 
-                    scale: 1.05, 
-                    y: -10,
-                    transition: { duration: 0.3 }
-                  }}
-                >
-                  <div className="text-4xl font-medium text-accent">{step.number}</div>
-                  <h3 className="text-xl font-medium">{step.title}</h3>
-                  <p className="text-text/80">
-                    {step.description}
-                  </p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-      )}
-
-      {/* Testimonials */}
-      {viewMode === 'browsing' && (
-        <section ref={testimonialsRef} className="py-20 px-4 bg-white">
-          <div className="max-w-7xl mx-auto">
-            {/* Header Section */}
-            <motion.div 
-              className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-16"
-              initial={{ opacity: 0, y: 50 }}
-              animate={testimonialsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              {/* Left Side - Heading */}
-              <motion.div 
-                className="text-left"
-                initial={{ opacity: 0, x: -50 }}
-                animate={testimonialsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              >
-                <span className="text-[#8bccc2] font-semibold text-sm uppercase tracking-wider block mb-4">
-                  Natural Gut Health. Real Results.
-                </span>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-text">
-                  What Our Customers Say
-                </h2>
-              </motion.div>
-
-              {/* Middle - Separator Line */}
-              <motion.div 
-                className="hidden lg:flex justify-center"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={testimonialsInView ? { opacity: 1, scaleX: 1 } : { opacity: 0, scaleX: 0 }}
-                transition={{ duration: 1, delay: 0.4, ease: "easeOut" }}
-              >
-                <div className="relative w-40 h-px">
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#8bccc2] to-transparent rounded-full"></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#78b4aa] to-transparent rounded-full opacity-80"></div>
-                </div>
-              </motion.div>
-
-              {/* Right Side - Description */}
-              <motion.div 
-                className="text-left lg:text-right"
-                initial={{ opacity: 0, x: 50 }}
-                animate={testimonialsInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
-                transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-              >
-                <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
-                  Real stories from people who have transformed their gut health with Eubiosis
-                </p>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={testimonialsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-              transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-            >
-              <EubiosisTestimonials />
-            </motion.div>
-          </div>
-        </section>
-      )}
-
-      {/* CTA Section */}
-      {viewMode === 'browsing' && (
-        <div className="w-full">
-          <Image
-            src="/images/Website Banner.png"
-            alt="Start your journey to gut balance today"
-            width={1200}
-            height={500}
-            className="w-full h-auto object-cover"
-            priority={false}
-          />
-        </div>
-      )}
 
       {/* Exit Intent Popup */}
       <ExitIntentPopup />

@@ -265,6 +265,84 @@
  background-color: #87dbd0;
 }
 
+/* Unique button styles for illness selection */
+.btn-diabetes,
+.btn-ibs,
+.btn-anxiety,
+.btn-depression,
+.btn-autoimmune,
+.btn-digestive,
+.btn-skin,
+.btn-browsing {
+ background: linear-gradient(135deg, #4ECDC4, #44A08D);
+ color: #fff;
+ padding: 12px 24px;
+ border-radius: 15px;
+ border: 2px solid #4ECDC4;
+ font-weight: 600;
+ text-transform: uppercase;
+ letter-spacing: 1px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ position: relative;
+ overflow: hidden;
+}
+
+.btn-diabetes::before,
+.btn-ibs::before,
+.btn-anxiety::before,
+.btn-depression::before,
+.btn-autoimmune::before,
+.btn-digestive::before,
+.btn-skin::before,
+.btn-browsing::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ left: -100%;
+ width: 100%;
+ height: 100%;
+ background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+ transition: left 0.5s;
+}
+
+.btn-diabetes:hover::before,
+.btn-ibs:hover::before,
+.btn-anxiety:hover::before,
+.btn-depression:hover::before,
+.btn-autoimmune:hover::before,
+.btn-digestive:hover::before,
+.btn-skin:hover::before,
+.btn-browsing:hover::before {
+ left: 100%;
+}
+
+.btn-diabetes:hover,
+.btn-ibs:hover,
+.btn-anxiety:hover,
+.btn-depression:hover,
+.btn-autoimmune:hover,
+.btn-digestive:hover,
+.btn-skin:hover,
+.btn-browsing:hover {
+ transform: scale(1.05);
+ border-color: #44A08D;
+}
+
+.btn-diabetes:active,
+.btn-ibs:active,
+.btn-anxiety:active,
+.btn-depression:active,
+.btn-autoimmune:active,
+.btn-digestive:active,
+.btn-skin:active,
+.btn-browsing:active {
+ transform: scale(0.95);
+ transition: transform 0.1s ease;
+ box-shadow: 0 0 30px rgba(78, 205, 196, 0.8);
+ border-color: #4ECDC4;
+}
+
 /* Gooey Button Styles - Exact CodePen */
 @property --a {
     syntax: "<percentage>";

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TextSplit } from './split-text';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Ripple {
   id: number;
@@ -320,34 +321,62 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
               {/* Illness Buttons */}
               <div className="mt-8 w-full">
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mb-4">
-                  {[
-                    'Diabetes',
-                    'IBS',
-                    'Anxiety',
-                    'Depression',
-                    'Autoimmune',
-                    'Digestive Issues',
-                    'Skin Conditions',
-                    'Just Browsing'
-                  ].map((item, index) => (
-                    item === 'Just Browsing' ? (
-                      <button
-                        key={item}
-                        onClick={() => onBrowsingClick?.()}
-                        className="btn"
-                      >
-                        {item}
-                      </button>
-                    ) : (
-                      <button
-                        key={item}
-                        onClick={() => onIllnessClick?.(item)}
-                        className="btn-secondary"
-                      >
-                        {item}
-                      </button>
-                    )
-                  ))}
+                  <button
+                    key="Diabetes"
+                    onClick={() => onIllnessClick?.('Diabetes')}
+                    className="btn-diabetes"
+                  >
+                    Diabetes
+                  </button>
+                  <button
+                    key="IBS"
+                    onClick={() => onIllnessClick?.('IBS')}
+                    className="btn-ibs"
+                  >
+                    IBS
+                  </button>
+                  <button
+                    key="Anxiety"
+                    onClick={() => onIllnessClick?.('Anxiety')}
+                    className="btn-anxiety"
+                  >
+                    Anxiety
+                  </button>
+                  <button
+                    key="Depression"
+                    onClick={() => onIllnessClick?.('Depression')}
+                    className="btn-depression"
+                  >
+                    Depression
+                  </button>
+                  <button
+                    key="Autoimmune"
+                    onClick={() => onIllnessClick?.('Autoimmune')}
+                    className="btn-autoimmune"
+                  >
+                    Autoimmune
+                  </button>
+                  <button
+                    key="Digestive Issues"
+                    onClick={() => onIllnessClick?.('Digestive Issues')}
+                    className="btn-digestive"
+                  >
+                    Digestive Issues
+                  </button>
+                  <button
+                    key="Skin Conditions"
+                    onClick={() => onIllnessClick?.('Skin Conditions')}
+                    className="btn-skin"
+                  >
+                    Skin Conditions
+                  </button>
+                  <button
+                    key="Just Browsing"
+                    onClick={() => onBrowsingClick?.()}
+                    className="btn-browsing"
+                  >
+                    Just Browsing
+                  </button>
                 </div>
               </div>
 
@@ -356,9 +385,11 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                 <button className="btn-secondary">
                   LEARN MORE
                 </button>
-                <button className="btn">
-                  SHOP NOW
-                </button>
+                <Link href="/eubiosis-bottle/size-s/quantity-1">
+                  <button className="btn">
+                    SHOP NOW
+                  </button>
+                </Link>
               </div>
 
               {/* Detail Lines for Left Column */}

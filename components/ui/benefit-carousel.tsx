@@ -23,11 +23,11 @@ export function BenefitGrid({ benefits }: BenefitGridProps) {
   const effectiveHoveredIndex = hoveredIndex;
 
   return (
-    <section ref={sectionRef} className="py-20 px-4 bg-gradient-to-br from-[#f8fdfc] to-[#e8f4f8]" suppressHydrationWarning>
+    <section ref={sectionRef} className="py-2 px-4" style={{ backgroundColor: '#fefefc' }} suppressHydrationWarning>
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div 
-          className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-16"
+          className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-8"
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8, ease: "easeOut" }}

@@ -84,10 +84,10 @@ export function AnimatedKeyIngredients() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="py-12 px-4 bg-gradient-to-b from-white to-gray-50">
+    <section ref={sectionRef} className="pt-6 pb-40 px-4" style={{ backgroundColor: '#fefefc' }}>
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
-        <div className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-16">
+        <div className="grid lg:grid-cols-3 grid-cols-1 gap-8 items-center mb-8">
           {/* Left Side - Heading */}
           <div className="text-left">
             <span className="text-[#8bccc2] font-semibold text-sm uppercase tracking-wider block mb-4">
