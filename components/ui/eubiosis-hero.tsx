@@ -381,11 +381,12 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
               {/* Illness Buttons - Desktop: Grid, Mobile: Dropdown */}
               <div className="mt-8 w-full">
                 {/* Desktop: Show all buttons in grid */}
-                <div className="hidden lg:grid lg:grid-cols-4 gap-2 mb-4">
+                <div className="hidden lg:grid lg:grid-cols-4 gap-4 mb-4">
                   <button
                     key="Diabetes"
                     onClick={() => onIllnessClick?.('Diabetes')}
                     className="btn-diabetes"
+                    style={{ fontSize: '14px' }}
                   >
                     Diabetes
                   </button>
@@ -393,6 +394,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="IBS"
                     onClick={() => onIllnessClick?.('IBS')}
                     className="btn-ibs"
+                    style={{ fontSize: '14px' }}
                   >
                     IBS
                   </button>
@@ -400,6 +402,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="Anxiety"
                     onClick={() => onIllnessClick?.('Anxiety')}
                     className="btn-anxiety"
+                    style={{ fontSize: '14px' }}
                   >
                     Anxiety
                   </button>
@@ -407,6 +410,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="Depression"
                     onClick={() => onIllnessClick?.('Depression')}
                     className="btn-depression"
+                    style={{ fontSize: '14px' }}
                   >
                     Depression
                   </button>
@@ -414,6 +418,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="Autoimmune"
                     onClick={() => onIllnessClick?.('Autoimmune')}
                     className="btn-autoimmune"
+                    style={{ fontSize: '14px' }}
                   >
                     Autoimmune
                   </button>
@@ -421,6 +426,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="Digestive Issues"
                     onClick={() => onIllnessClick?.('Digestive Issues')}
                     className="btn-digestive"
+                    style={{ fontSize: '14px' }}
                   >
                     Digestive Issues
                   </button>
@@ -428,6 +434,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="Skin Conditions"
                     onClick={() => onIllnessClick?.('Skin Conditions')}
                     className="btn-skin"
+                    style={{ fontSize: '14px' }}
                   >
                     Skin Conditions
                   </button>
@@ -435,6 +442,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick }: { onIllnessClick?: (i
                     key="Just Browsing"
                     onClick={() => onBrowsingClick?.()}
                     className="btn-browsing"
+                    style={{ fontSize: '14px' }}
                   >
                     Just Browsing
                   </button>
