@@ -222,20 +222,6 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    if (cycling) {
-      const interval = setInterval(() => {
-        setSelectedIllness(prev => {
-          if (prev === null) return illnesses[0];
-          const currentIndex = illnesses.indexOf(prev);
-          const nextIndex = (currentIndex + 1) % illnesses.length;
-          return illnesses[nextIndex];
-        });
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [cycling, illnesses]);
-
   return (
     <main>
       <AnimatePresence mode="wait">
@@ -288,6 +274,25 @@ export default function Home() {
           </motion.div>
         )}
 
+        {/* What is Eubiosis - Show when browsing */}
+        {viewMode === 'browsing' && (
+          <motion.div
+            key="what-is-eubiosis"
+            initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 20 }}
+            animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
+            transition={{
+              duration: 1.2,
+              delay: 0.1,
+              ease: [0.25, 0.46, 0.45, 0.94],
+              type: "spring",
+              stiffness: 80
+            }}
+          >
+            <EubiosisFeatures illness={null} onBrowsingClick={handleBrowsingClick} onResetToHero={handleResetToHero} onPrevIllness={handlePrevIllness} onNextIllness={handleNextIllness} onLearnMoreClick={handleLearnMoreClick} cycling={cycling} />
+          </motion.div>
+        )}
+
         {/* Key Benefits - Only in browsing mode */}
         {viewMode === 'browsing' && (
           <motion.div
@@ -297,7 +302,7 @@ export default function Home() {
             exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
             transition={{ 
               duration: 1.2, 
-              delay: 0.2, 
+              delay: 0.3, 
               ease: [0.25, 0.46, 0.45, 0.94],
               type: "spring",
               stiffness: 80
@@ -316,7 +321,7 @@ export default function Home() {
             exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
             transition={{ 
               duration: 1.2, 
-              delay: 0.4, 
+              delay: 0.5, 
               ease: [0.25, 0.46, 0.45, 0.94],
               type: "spring",
               stiffness: 80
@@ -335,7 +340,7 @@ export default function Home() {
             exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}
             transition={{
               duration: 1.2,
-              delay: 0.6,
+              delay: 0.7, 
               ease: [0.25, 0.46, 0.45, 0.94],
               type: "spring",
               stiffness: 80
@@ -412,7 +417,7 @@ export default function Home() {
             exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.5 } }}
             transition={{ 
               duration: 1.4, 
-              delay: 0.8, 
+              delay: 0.9, 
               ease: [0.25, 0.46, 0.45, 0.94],
               type: "spring",
               stiffness: 60

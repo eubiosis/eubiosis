@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Play, X, ChevronLeft, ChevronRight, ChevronDown, ArrowRight, RotateCcw } from 'lucide-react';
+import { Play, X, ChevronLeft, ChevronRight, ChevronDown, ArrowRight, RotateCcw, Home } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -363,6 +363,8 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
   const featureRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+
+  const illnesses = ['IBS', 'Diabetes', 'Anxiety', 'Depression', 'Autoimmune', 'Digestive Issues'];
 
   // Get content based on selected illness, fallback to default if no illness selected
   const currentContent = illness ? illnessContent[illness as keyof typeof illnessContent] : {
@@ -1073,7 +1075,7 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                   {cycling && (
                     <>
                       {/* Carousel Navigation */}
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-6">
                         <motion.button 
                           className="p-2 rounded-full bg-[#8bccc2]/20 hover:bg-[#8bccc2]/30 transition-colors"
                           onClick={onPrevIllness}
@@ -1086,25 +1088,14 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                           <ChevronLeft className="w-5 h-5 text-[#8bccc2]" />
                         </motion.button>
                         
-                        {/* Dots Indicator */}
-                        <div className="flex gap-2">
-                          {['IBS', 'Diabetes', 'Anxiety', 'Depression', 'Autoimmune', 'Digestive Issues'].map((illnessName, index) => (
-                            <motion.div
-                              key={illnessName}
-                              className={`w-2 h-2 rounded-full transition-colors cursor-pointer ${
-                                illness === illnessName ? 'bg-[#8bccc2]' : 'bg-gray-300 hover:bg-gray-400'
-                              }`}
-                              onClick={() => {
-                                // Dispatch event to change to specific illness
-                                const event = new CustomEvent('changeIllness', { detail: illnessName });
-                                window.dispatchEvent(event);
-                              }}
-                              initial={{ opacity: 0, scale: 0.5 }}
-                              animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-                              transition={{ duration: 0.4, delay: 1.0 + index * 0.1, ease: "easeOut" }}
-                              whileHover={{ scale: 1.2 }}
-                            />
-                          ))}
+                        {/* Illness Name and Counter */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-[#8bccc2] font-semibold text-sm">
+                            {illness}
+                          </div>
+                          <div className="text-gray-500 text-xs">
+                            {illnesses.indexOf(illness || illnesses[0]) + 1} / {illnesses.length}
+                          </div>
                         </div>
                         
                         <motion.button 
@@ -1119,22 +1110,21 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                           <ChevronRight className="w-5 h-5 text-[#8bccc2]" />
                         </motion.button>
                       </div>
+                      
+                      {/* Read More Button for Cycling Mode */}
+                      <motion.button 
+                        className="btn-secondary"
+                        onClick={onLearnMoreClick}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.6, delay: 1.6, ease: "easeOut" }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        READ MORE
+                      </motion.button>
                     </>
                   )}
-                  
-                  {/* Shop Now Button */}
-                  <Link href="/eubiosis-bottle/size-s/quantity-1">
-                    <motion.button 
-                      className="btn"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.6, delay: 1.6, ease: "easeOut" }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      SHOP NOW
-                    </motion.button>
-                  </Link>
                   
                   {/* Show Learn More button only when NOT cycling (single illness selected) */}
                   {!cycling && (
@@ -1153,15 +1143,15 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                   
                   {/* Back Home Button */}
                   <motion.button 
-                    className="btn-secondary"
+                    className="btn-secondary p-3"
                     onClick={onResetToHero}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.6, delay: cycling ? 1.8 : 2.0, ease: "easeOut" }}
+                    transition={{ duration: 0.6, delay: cycling ? 1.6 : 1.8, ease: "easeOut" }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    BACK HOME
+                    <Home className="w-5 h-5" />
                   </motion.button>
                 </div>
               </motion.div>
