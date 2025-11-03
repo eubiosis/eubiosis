@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { ArrowLeft, Check, CreditCard, Truck, Shield, Lock, Plus, Minus } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Suspense } from 'react'
 
 interface OrderItem {
   id: string
@@ -28,7 +29,7 @@ interface OrderSummary {
   total: number
 }
 
-export default function Checkout() {
+function CheckoutContent() {
   const searchParams = useSearchParams()
   
   // Get funnel parameters
@@ -537,5 +538,13 @@ export default function Checkout() {
         </div>
       </div>
     </main>
+  )
+}
+
+export default function Checkout() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutContent />
+    </Suspense>
   )
 }
