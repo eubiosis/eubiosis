@@ -19,7 +19,37 @@ export default function EubiosisBottle({ params }: PageProps) {
   const router = useRouter()
   const urlParams = params.params || []
   
-  // Extract size and quantity from URL
+  // Check if coming back from checkout
+  const [isFromCheckout, setIsFromCheckout] = useState(false)
+  const [checkoutParams, setCheckoutParams] = useState({
+    bundle: false,
+    email: false
+  })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search)
+      const fromCheckout = searchParams.get('checkout') === 'true'
+      const bundle = searchParams.get('bundle') === 'true'
+      const email = searchParams.get('email') === 'true'
+      
+      setIsFromCheckout(fromCheckout)
+      setCheckoutParams({ bundle, email })
+    }
+  }, [])
+  
+  // Listen for cart item updates and sync quantity selector
+  useEffect(() => {
+    const handleCartItemAdded = (event: CustomEvent) => {
+      const item = event.detail
+      setQuantity(item.quantity)
+    }
+
+    window.addEventListener('cartItemAdded', handleCartItemAdded as EventListener)
+    return () => {
+      window.removeEventListener('cartItemAdded', handleCartItemAdded as EventListener)
+    }
+  }, [])
   const getSizeFromUrl = () => {
     const sizeParam = urlParams.find(param => param.startsWith('size-'))
     if (sizeParam === 'size-s') return '50ml'
@@ -222,15 +252,13 @@ export default function EubiosisBottle({ params }: PageProps) {
   }, [isZoomed])
 
   const pricing = {
-    '50ml': { basePrice: 499 },
-    '100ml': { basePrice: 799 }
+    '50ml': { basePrice: 325, discountedPrice: 265 },
+    '100ml': { basePrice: 650, discountedPrice: 530 }
   }
 
-  // Calculate discount based on quantity
+  // 16% discount applied to get more buyers
   const getDiscount = (qty: number) => {
-    if (qty >= 3) return 0.20 // 20% off for 3+
-    if (qty >= 2) return 0.10 // 10% off for 2+
-    return 0 // No discount for 1
+    return 0.16 // 16% discount (325->265, 650->530)
   }
 
   // Calculate total price with discount
@@ -241,16 +269,26 @@ export default function EubiosisBottle({ params }: PageProps) {
     return Math.round(subtotal * (1 - discount))
   }
 
-  // Get discount text
+  // No discount text
   const getDiscountText = () => {
-    const discount = getDiscount(quantity)
-    if (discount === 0.20) return '20% Saved!'
-    if (discount === 0.10) return '10% Saved!'
     return null
   }
 
   return (
     <main className="scroll-smooth" style={{ willChange: 'scroll-position' }}>
+      {/* Launch Banner */}
+      <div className="bg-gradient-to-r from-accent to-accent/80 text-white py-3 px-4 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+        <div className="relative z-10">
+          <span className="text-sm md:text-base font-semibold">
+            🚀 GRAND OPENING: Launch Special - Save 18% on All Orders! 
+          </span>
+          <span className="text-xs md:text-sm opacity-90 ml-2">
+            Limited time introductory pricing
+          </span>
+        </div>
+      </div>
+      
       {/* Product Display Section */}
       <motion.section 
         ref={productSectionRef}
@@ -378,72 +416,109 @@ export default function EubiosisBottle({ params }: PageProps) {
             >
               <div>
                 <h1 className="text-3xl font-medium text-text mb-1">
-                  Eubiosis — Nature in a Bottle ©
+                  {checkoutParams.bundle ? `Bundle (${quantity} bottles)` : 'Eubiosis — Nature in a Bottle ©'}
                 </h1>
                 <p className="text-lg md:text-base text-text/70">
-                  <span className="font-mono">{animatedSize}</span>ml | Honey-based probiotic with 42 bacterial strains
+                  {checkoutParams.bundle ? (
+                    <>
+                      <span className="font-mono">{quantity} × {selectedSize}</span> Bundle | Honey-based probiotic with 42 bacterial strains
+                      <br />
+                      <span className="text-accent font-medium">20% LIMITED DEAL discount applied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-mono">{animatedSize}</span>ml | Honey-based probiotic with 42 bacterial strains
+                    </>
+                  )}
                 </p>
               </div>
 
               {/* Size Selection */}
-              <div className="space-y-3 bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <h3 className="text-lg font-medium text-text">Choose Size</h3>
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => handleSizeChange('50ml')}
-                    className={`px-4 py-2 rounded-eubiosis border-2 transition-all text-sm ${
-                      selectedSize === '50ml'
-                        ? 'border-accent bg-accent/10 text-accent'
-                        : 'border-border text-text hover:border-accent/50'
-                    }`}
-                  >
-                    50ml
-                  </button>
-                  <button
-                    onClick={() => handleSizeChange('100ml')}
-                    className={`px-4 py-2 rounded-eubiosis border-2 transition-all text-sm ${
-                      selectedSize === '100ml'
-                        ? 'border-accent bg-accent/10 text-accent'
-                        : 'border-border text-text hover:border-accent/50'
-                    }`}
-                  >
-                    100ml
-                  </button>
+              {!checkoutParams.bundle && (
+                <div className="space-y-3 bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <h3 className="text-lg font-medium text-text">Choose Size</h3>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => handleSizeChange('50ml')}
+                      className={`px-4 py-2 rounded-eubiosis border-2 transition-all text-sm ${
+                        selectedSize === '50ml'
+                          ? 'border-accent bg-accent/10 text-accent'
+                          : 'border-border text-text hover:border-accent/50'
+                      }`}
+                    >
+                      50ml
+                    </button>
+                    <button
+                      onClick={() => handleSizeChange('100ml')}
+                      className={`px-4 py-2 rounded-eubiosis border-2 transition-all text-sm ${
+                        selectedSize === '100ml'
+                          ? 'border-accent bg-accent/10 text-accent'
+                          : 'border-border text-text hover:border-accent/50'
+                      }`}
+                    >
+                      100ml
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Quantity Selection */}
               <div className="space-y-3 bg-white/40 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <h3 className="text-lg font-medium text-text">Quantity</h3>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => handleQuantityChange(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1}
-                      className="w-11 h-11 rounded-full bg-white/60 backdrop-blur-sm border border-white/40 flex items-center justify-center hover:bg-white/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <Minus className="w-4 h-4 text-text" />
-                    </button>
-                    
-                    <div className="bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/40 min-w-[60px] text-center">
-                      <span className="text-xl font-bold text-text transition-all duration-300">{quantity}</span>
+                <h3 className="text-lg font-medium text-text">
+                  {checkoutParams.bundle ? 'Bundle Summary' : 'Quantity'}
+                </h3>
+                {checkoutParams.bundle ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between p-3 bg-accent/10 rounded-lg">
+                      <div>
+                        <span className="font-medium text-text">{quantity} × {selectedSize} Bottles</span>
+                        <p className="text-sm text-text/70">
+                          {quantity * (selectedSize === '50ml' ? 10 : 20)} days of complete transformation
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-accent">
+                          R{Math.round(pricing[selectedSize].discountedPrice * quantity * 0.8)}
+                        </div>
+                        <div className="text-sm text-text/50 line-through">
+                          R{pricing[selectedSize].basePrice * quantity}
+                        </div>
+                      </div>
                     </div>
-                    
-                    <button
-                      onClick={() => handleQuantityChange(quantity + 1)}
-                      className="w-11 h-11 rounded-full bg-white/60 backdrop-blur-sm border border-white/40 flex items-center justify-center hover:bg-white/80 transition-all"
-                    >
-                      <Plus className="w-4 h-4 text-text" />
-                    </button>
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-red-600 font-medium text-sm">🎯 LIMITED DEAL:</span>
+                        <span className="text-red-600">20% off bundle pricing!</span>
+                      </div>
+                      <p className="text-xs text-red-500 mt-1">
+                        Save R{Math.round(pricing[selectedSize].basePrice * quantity * 0.2)} on this bundle
+                      </p>
+                    </div>
                   </div>
-                  
-                  {/* Discount Badge */}
-                  {getDiscountText() && (
-                    <div className="bg-accent text-white px-3 py-1 rounded-full text-xs font-medium animate-pulse">
-                      {getDiscountText()}
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => handleQuantityChange(Math.max(1, quantity - 1))}
+                        disabled={quantity <= 1}
+                        className="w-11 h-11 rounded-full bg-white/60 backdrop-blur-sm border border-white/40 flex items-center justify-center hover:bg-white/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Minus className="w-4 h-4 text-text" />
+                      </button>
+                      
+                      <div className="bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 border border-white/40 min-w-[60px] text-center">
+                        <span className="text-xl font-bold text-text transition-all duration-300">{quantity}</span>
+                      </div>
+                      
+                      <button
+                        onClick={() => handleQuantityChange(quantity + 1)}
+                        className="w-11 h-11 rounded-full bg-white/60 backdrop-blur-sm border border-white/40 flex items-center justify-center hover:bg-white/80 transition-all"
+                      >
+                        <Plus className="w-4 h-4 text-text" />
+                      </button>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               {/* Price Display */}
@@ -452,9 +527,19 @@ export default function EubiosisBottle({ params }: PageProps) {
                   <span className="text-lg font-medium text-text">Total:</span>
                   <div className="text-right">
                     <div className="text-2xl font-bold text-accent transition-all duration-500">
-                      R<span className="font-mono">{animatedPrice}</span>
+                      R<span className="font-mono">
+                        {checkoutParams.bundle 
+                          ? Math.round(pricing[selectedSize].discountedPrice * quantity * 0.8)
+                          : animatedPrice
+                        }
+                      </span>
                     </div>
-                    {getDiscount(quantity) > 0 && (
+                    {checkoutParams.bundle && (
+                      <div className="text-sm text-text/50 line-through">
+                        R{pricing[selectedSize].basePrice * quantity}
+                      </div>
+                    )}
+                    {!checkoutParams.bundle && getDiscount(quantity) > 0 && (
                       <div className="text-xs text-text/60 line-through">
                         R{pricing[selectedSize].basePrice * quantity}
                       </div>
@@ -465,46 +550,96 @@ export default function EubiosisBottle({ params }: PageProps) {
 
               {/* Buttons */}
               <div className="pt-2 flex flex-row justify-between items-center gap-2">
-                <Link href="/funnel" className="pay-btn">
-                  <span className="btn-text">Buy Now</span>
-                  <div className="icon-container">
-                    <svg viewBox="0 0 24 24" className="icon card-icon">
-                      <path
-                        d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                    <svg viewBox="0 0 24 24" className="icon payment-icon">
-                      <path
-                        d="M2,17H22V21H2V17M6.25,7H9V6H6V3H18V6H15V7H17.75L19,17H5L6.25,7M9,10H15V8H9V10M9,13H15V11H9V13Z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                    <svg viewBox="0 0 24 24" className="icon dollar-icon">
-                      <path
-                        d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                    <svg viewBox="0 0 24 24" className="icon wallet-icon default-icon">
-                      <path
-                        d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                    <svg viewBox="0 0 24 24" className="icon check-icon">
-                      <path
-                        d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"
-                        fill="currentColor"
-                      ></path>
-                    </svg>
-                  </div>
-                </Link>
-                
-                {/* Back Home Button */}
+                {isFromCheckout ? (
+                  // Show Checkout and Delete Bundle buttons when coming from checkout with bundle
+                  <>
+                    <Link 
+                      href={`/checkout?bundle=${checkoutParams.bundle}&email=${checkoutParams.email}&size=${selectedSize}&quantity=${quantity}${checkoutParams.bundle ? '&upsellDiscount=20' : ''}`}
+                      className="pay-btn"
+                      style={{ width: 'auto', padding: '12px 24px' }}
+                    >
+                      <span className="btn-text">Checkout</span>
+                      <div className="icon-container">
+                        <svg viewBox="0 0 24 24" className="icon payment-icon">
+                          <path
+                            d="M2,17H22L20,7H4L2,17M20,4V6H4V4H20M6,10V12H18V10H6Z"
+                            fill="currentColor"
+                          ></path>
+                        </svg>
+                      </div>
+                    </Link>
+                    {checkoutParams.bundle && (
+                      <button 
+                        onClick={() => {
+                          // Clear bundle parameters and reload page with normal pricing
+                          const newUrl = `/eubiosis-bottle/size-${selectedSize === '50ml' ? 's' : 'j'}/quantity-1`
+                          window.location.href = newUrl
+                        }}
+                        className="delete-bundle-btn"
+                        style={{
+                          background: '#dc2626',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '12px',
+                          padding: '12px 16px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          transition: 'all 0.3s ease',
+                          minWidth: '120px'
+                        }}
+                      >
+                        Delete Bundle
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  // Show regular Buy Now and Add to Cart buttons
+                  <>
+                    <button 
+                      className="pay-btn"
+                      style={{ width: 'auto', padding: '12px 24px', minWidth: '140px' }}
+                      onClick={() => {
+                        const cartItem = {
+                          id: 'eubiosis-single',
+                          name: 'Eubiosis — Nature in a Bottle',
+                          size: selectedSize,
+                          quantity: quantity,
+                          basePrice: pricing[selectedSize].basePrice,
+                          discountedPrice: pricing[selectedSize].discountedPrice,
+                          image: '/images/Website Product Image.png'
+                        }
+                        
+                        // Dispatch custom event to add to cart and open sidebar
+                        const event = new CustomEvent('addToCart', { detail: cartItem })
+                        window.dispatchEvent(event)
+                      }}
+                    >
+                      <span className="btn-text">Buy Now</span>
+                      <div className="icon-container">
+                        <svg viewBox="0 0 24 24" className="icon card-icon">
+                          <path
+                            d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18C2,19.11 2.89,20 4,20H20C21.11,20 22,19.11 22,18V6C22,4.89 21.11,4 20,4Z"
+                            fill="currentColor"
+                          ></path>
+                        </svg>
+                        <svg viewBox="0 0 24 24" className="icon payment-icon">
+                          <path
+                            d="M2,17H22L20,7H4L2,17M20,4V6H4V4H20M6,10V12H18V10H6Z"
+                            fill="currentColor"
+                          ></path>
+                        </svg>
+                      </div>
+                    </button>
+                  </>
+                )}
+              </div>
+              
+              {/* Back Home Button */}
+              <div className="pt-4">
                 <Link 
                   href="/"
-                  className="btn-secondary flex items-center gap-2 text-sm font-medium"
+                  className="btn-secondary flex items-center gap-2 text-sm font-medium w-auto px-4 py-2"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back Home</span>
@@ -514,6 +649,7 @@ export default function EubiosisBottle({ params }: PageProps) {
           </div>
         </div>
       </motion.section>
+
 
       {/* Tabs Section */}
       <motion.section 
@@ -715,7 +851,8 @@ export default function EubiosisBottle({ params }: PageProps) {
               <div className="flex justify-center">
                 <Truck className="w-8 h-8 text-accent" />
               </div>
-              <p className="font-medium text-text text-sm">Free Shipping</p>
+              <p className="font-medium text-text text-sm">Same-Day Delivery</p>
+              <p className="text-xs text-text/60">Mokopane area</p>
             </div>
           </motion.div>
         </div>

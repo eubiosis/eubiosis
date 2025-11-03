@@ -5,8 +5,56 @@ import { Check, Lock, Truck, Shield } from 'lucide-react'
 
 export default function Funnel() {
   const [email, setEmail] = useState('')
-  const [step, setStep] = useState<'discount' | 'upsell' | 'complete'>('discount')
+  const [step, setStep] = useState<'discount' | 'upsell'>('discount')
   const [discountApplied, setDiscountApplied] = useState(false)
+
+  // Get original order details from URL or localStorage
+  const getOriginalOrder = () => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const size = params.get('size') || '50ml'
+      const quantity = parseInt(params.get('quantity') || '1')
+      const bundle = params.get('bundle') === 'true'
+      return { size, quantity, bundle }
+    }
+    return { size: '50ml', quantity: 1, bundle: false }
+  }
+
+  const originalOrder = getOriginalOrder()
+
+  // Calculate pricing
+  const calculatePricing = () => {
+    const basePrice = originalOrder.size === '50ml' ? 325 : 650
+    const launchPrice = originalOrder.size === '50ml' ? 265 : 530
+    
+    // Original order total
+    const originalTotal = launchPrice * originalOrder.quantity
+    
+    // Create upsell: add 50% more bottles (minimum 3 bottles total)
+    const upsellQuantity = Math.max(3, Math.ceil(originalOrder.quantity * 1.5))
+    const upsellTotal = launchPrice * upsellQuantity
+    
+    // Limited deal discount: 20% off the upsell
+    const limitedDealDiscount = 0.20
+    const upsellDiscountedTotal = Math.round(upsellTotal * (1 - limitedDealDiscount))
+    
+    // Calculate savings
+    const totalSavings = (basePrice * upsellQuantity) - upsellDiscountedTotal
+    const percentageSaved = Math.round(((basePrice * upsellQuantity) - upsellDiscountedTotal) / (basePrice * upsellQuantity) * 100)
+    
+    return {
+      originalTotal,
+      upsellQuantity,
+      upsellTotal,
+      upsellDiscountedTotal,
+      totalSavings,
+      percentageSaved,
+      basePrice,
+      launchPrice
+    }
+  }
+
+  const pricing = calculatePricing()
 
   useEffect(() => {
     /** 
@@ -98,15 +146,26 @@ export default function Funnel() {
   }
 
   const handleUpgrade = () => {
-    setStep('complete')
-    // Redirect to checkout with 3-bottle bundle
-    console.log('Upgrading to 3-bottle bundle')
+    // Redirect to checkout with upsell bundle
+    const params = new URLSearchParams({
+      bundle: 'true',
+      email: discountApplied.toString(),
+      size: originalOrder.size,
+      quantity: pricing.upsellQuantity.toString(),
+      upsellDiscount: '20' // 20% limited deal discount
+    })
+    window.location.href = `/checkout?${params.toString()}`
   }
 
   const handleContinue = () => {
-    setStep('complete')
     // Redirect to checkout with original selection
-    console.log('Continuing with original order')
+    const params = new URLSearchParams({
+      bundle: 'false',
+      email: discountApplied.toString(),
+      size: originalOrder.size,
+      quantity: originalOrder.quantity.toString()
+    })
+    window.location.href = `/checkout?${params.toString()}`
   }
 
   return (
@@ -178,15 +237,52 @@ export default function Funnel() {
         <section className="py-16 px-4">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white/80 backdrop-blur-sm border border-white/30 rounded-2xl p-8 space-y-8">
-              <div className="text-center space-y-4">
-                <div className="text-5xl mb-4">💪</div>
-                <h2 className="text-3xl font-medium text-text">
-                  Most users feel full results after 30 days
-                </h2>
-                <p className="text-xl text-text/80">
-                  Save 15% with our 3-bottle bundle and ensure you have enough for a complete transformation.
-                </p>
-              </div>
+              {originalOrder.quantity >= 3 && originalOrder.bundle ? (
+                // Bundle already selected through funnel upsell
+                <div className="text-center space-y-6">
+                  <div className="text-6xl mb-4">✅</div>
+                  <h2 className="text-3xl font-medium text-text">
+                    Bundle Already Selected!
+                  </h2>
+                  <p className="text-xl text-text/80">
+                    Great choice! You've already selected our {originalOrder.quantity}-bottle bundle for maximum results.
+                  </p>
+                  <div className="bg-accent/10 border border-accent/20 rounded-lg p-6">
+                    <h3 className="text-lg font-medium text-accent mb-3">Your Bundle Benefits:</h3>
+                    <div className="space-y-2 text-left">
+                      <div className="flex items-center gap-2 text-sm text-text/70">
+                        <Check className="w-4 h-4 text-accent" />
+                        <span>{originalOrder.quantity * (originalOrder.size === '50ml' ? 10 : 20)}-day complete transformation</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-text/70">
+                        <Check className="w-4 h-4 text-accent" />
+                        <span>Best price per bottle</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-text/70">
+                        <Check className="w-4 h-4 text-accent" />
+                        <span>Same-day delivery (Mokopane area) or free Courier Guy shipping in SA</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleContinue}
+                    className="btn w-full text-lg py-4"
+                  >
+                    Continue to Checkout
+                  </button>
+                </div>
+              ) : (
+                // Regular upsell for single bottles
+                <>
+                  <div className="text-center space-y-4">
+                    <div className="text-5xl mb-4">💪</div>
+                    <h2 className="text-3xl font-medium text-text">
+                      Most users feel full results after 30 days
+                    </h2>
+                    <p className="text-xl text-text/80">
+                      Save {pricing.percentageSaved}% with our {pricing.upsellQuantity}-bottle bundle and ensure you have enough for a complete transformation.
+                    </p>
+                  </div>
 
               {/* Comparison */}
               <div className="grid md:grid-cols-2 gap-6">
@@ -194,84 +290,66 @@ export default function Funnel() {
                 <div className="bg-white/60 backdrop-blur-sm border border-white/40 rounded-eubiosis p-6 space-y-4">
                   <h3 className="text-xl font-medium text-text">Your Current Order</h3>
                   <div className="space-y-2">
-                    <p className="text-text/70">1 Bottle (10-day supply)</p>
-                    <p className="text-2xl font-medium text-text">R499</p>
-                    <p className="text-sm text-text/50">10% discount applied</p>
+                    <p className="text-text/70">{originalOrder.quantity} × {originalOrder.size} Bottle{originalOrder.quantity > 1 ? 's' : ''} ({originalOrder.quantity * (originalOrder.size === '50ml' ? 10 : 20)}-day supply)</p>
+                    <p className="text-2xl font-medium text-text">R{pricing.originalTotal}</p>
+                    <p className="text-sm text-text/50">Launch price applied</p>
                   </div>
                 </div>
 
                 {/* Upgraded Order */}
                 <div className="bg-white/70 backdrop-blur-sm border-2 border-accent rounded-eubiosis p-6 space-y-4 relative">
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-medium">
-                    BEST VALUE
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-1 rounded-full text-sm font-medium animate-pulse">
+                    LIMITED DEAL
                   </div>
-                  <h3 className="text-xl font-medium text-accent">Upgrade to 3-Bottle Bundle</h3>
+                  <h3 className="text-xl font-medium text-accent">Upgrade to {pricing.upsellQuantity}-Bottle Bundle</h3>
                   <div className="space-y-2">
-                    <p className="text-text/70">3 Bottles (30-day supply)</p>
-                    <p className="text-2xl font-medium text-accent">R1249</p>
-                    <p className="text-sm text-accent font-medium">Save 15% + Free Shipping</p>
+                    <p className="text-text/70">{pricing.upsellQuantity} × {originalOrder.size} Bottles ({pricing.upsellQuantity * (originalOrder.size === '50ml' ? 10 : 20)}-day supply)</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-2xl font-medium text-accent">R{pricing.upsellDiscountedTotal}</p>
+                      <p className="text-lg text-text/50 line-through">R{pricing.upsellTotal}</p>
+                    </div>
+                    <p className="text-sm text-accent font-medium">Save {pricing.percentageSaved}% + Free Shipping</p>
+                    <p className="text-xs text-red-600 font-medium">You save R{pricing.totalSavings} total!</p>
                   </div>
                   <div className="pt-2 space-y-2">
                     <div className="flex items-center gap-2 text-sm text-text/70">
                       <Check className="w-4 h-4 text-accent" />
-                      <span>Complete 30-day transformation</span>
+                      <span>Complete {pricing.upsellQuantity * (originalOrder.size === '50ml' ? 10 : 20)}-day transformation</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-text/70">
                       <Check className="w-4 h-4 text-accent" />
-                      <span>Best price per bottle</span>
+                      <span>Best price per bottle (R{Math.round(pricing.upsellDiscountedTotal / pricing.upsellQuantity)} each)</span>
                     </div>
                     <div className="flex items-center gap-2 text-sm text-text/70">
                       <Check className="w-4 h-4 text-accent" />
-                      <span>Free nationwide shipping</span>
+                      <span>Same-day delivery (Mokopane area) or free Courier Guy shipping in SA</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-4 pt-4">
-                <button
-                  onClick={handleUpgrade}
-                  className="btn w-full text-lg py-4"
-                >
-                  Yes, Upgrade My Order
-                </button>
-                <button
-                  onClick={handleContinue}
-                  className="btn-secondary w-full text-lg py-4"
-                >
-                  No Thanks, Continue
-                </button>
-              </div>
+                  {/* Action Buttons */}
+                  <div className="space-y-4 pt-4">
+                    <button
+                      onClick={handleUpgrade}
+                      className="btn w-full text-lg py-4"
+                    >
+                      Yes, Upgrade My Order
+                    </button>
+                    <button
+                      onClick={handleContinue}
+                      className="btn-secondary w-full text-lg py-4"
+                    >
+                      No Thanks, Continue
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>
       )}
 
-      {/* Step 3: Complete */}
-      {step === 'complete' && (
-        <section className="py-16 px-4">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm border border-white/30 rounded-2xl p-8 text-center space-y-6">
-              <div className="text-6xl mb-4">✅</div>
-              <h2 className="text-3xl font-medium text-text">
-                Thank you for your order!
-              </h2>
-              <p className="text-lg text-text/80">
-                You're one step closer to restoring your gut balance and renewing your vitality.
-              </p>
-              <div className="bg-accent/10 border border-accent rounded-eubiosis p-6 backdrop-blur-sm">
-                <p className="text-accent font-medium">
-                  Order confirmation has been sent to: {email}
-                </p>
-              </div>
-              <p className="text-sm text-text/50">
-                This is a demo. In production, this would redirect to a payment processor.
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Trust Footer - Always Visible */}
       <section className="py-12 px-4 bg-white/70 backdrop-blur-sm border-t border-white/30">

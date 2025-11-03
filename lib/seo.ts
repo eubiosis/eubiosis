@@ -92,7 +92,7 @@ export const defaultMetadata: Metadata = {
 
 export const shopMetadata: Metadata = {
   title: "Shop Eubiosis | Premium Honey-Based Probiotic Supplement",
-  description: "Purchase Eubiosis, the revolutionary honey-based probiotic with 42 bacterial strains. Available in 50ml and 100ml bottles. Free shipping across South Africa.",
+  description: "Purchase Eubiosis, the revolutionary honey-based probiotic with 42 bacterial strains. Available in 50ml and 100ml bottles. Same-day delivery in Mokopane, Limpopo. Free shipping across South Africa on qualifying orders.",
   keywords: [
     ...siteConfig.keywords,
     "buy eubiosis",
@@ -104,7 +104,7 @@ export const shopMetadata: Metadata = {
   ],
   openGraph: {
     title: "Shop Eubiosis | Premium Honey-Based Probiotic",
-    description: "Purchase Eubiosis, the revolutionary honey-based probiotic with 42 bacterial strains. Free shipping across South Africa.",
+    description: "Purchase Eubiosis, the revolutionary honey-based probiotic with 42 bacterial strains. Same-day delivery in Mokopane, Limpopo. Free shipping across South Africa on qualifying orders.",
     url: `${siteConfig.url}/shop`,
     images: [
       {

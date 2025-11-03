@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import BottomNav from '@/components/BottomNav'
+import CartSidebar from '@/components/CartSidebar'
+import ClientLayout from '@/components/ClientLayout'
+import { CartProvider, useCart } from '@/context/CartContext'
 import { defaultMetadata, organizationSchema } from '@/lib/seo'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
@@ -32,8 +35,12 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
-        <BottomNav />
+        <CartProvider>
+          <ClientLayout>
+            {children}
+            <BottomNav />
+          </ClientLayout>
+        </CartProvider>
         <SpeedInsights />
       </body>
     </html>

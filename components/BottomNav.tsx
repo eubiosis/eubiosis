@@ -2,8 +2,9 @@
 
 import { useRouter, usePathname } from 'next/navigation'
 import Dock from '@/components/ui/dock'
-import { Home, ShoppingCart } from 'lucide-react'
+import { Home, ShoppingCart, ShoppingBag } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useCart } from '@/context/CartContext'
 
 interface BottomNavProps {
   viewMode?: 'hero-only' | 'illness-selected' | 'browsing'
@@ -16,6 +17,7 @@ export default function BottomNav({ viewMode, onResetToHero, illness }: BottomNa
   const pathname = usePathname()
   const [isVisible, setIsVisible] = useState(false)
   const [scrollY, setScrollY] = useState(0)
+  const { getItemCount, openCart } = useCart()
 
   // Determine active item based on pathname and scroll position
   const getActiveItem = (): string | undefined => {
@@ -48,6 +50,12 @@ export default function BottomNav({ viewMode, onResetToHero, illness }: BottomNa
   }
 
   useEffect(() => {
+    // Hide nav on checkout and funnel pages
+    if (pathname.startsWith('/checkout') || pathname.startsWith('/funnel')) {
+      setIsVisible(false)
+      return
+    }
+    
     // Show/hide nav based on view mode and page
     if (pathname === '/') {
       // Hide nav in hero-only mode, when illness is selected, or when viewMode is undefined (initial state)
@@ -105,6 +113,12 @@ export default function BottomNav({ viewMode, onResetToHero, illness }: BottomNa
       icon: ShoppingCart,
       label: 'Shop',
       onClick: () => router.push('/eubiosis-bottle/size-s/quantity-1'),
+    },
+    {
+      icon: ShoppingBag,
+      label: 'Cart',
+      badge: getItemCount() > 0 ? getItemCount().toString() : undefined,
+      onClick: openCart,
     },
   ]
 
