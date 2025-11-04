@@ -275,7 +275,7 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick, onLearnMoreClick }: { o
           
           {/* Mobile Product Image - Shows at top on mobile */}
           <motion.div 
-            className="lg:hidden w-full max-w-sm h-[180px] sm:h-[220px] flex items-center justify-center relative -mt-8 -mb-2"
+            className="lg:hidden w-full max-w-sm h-[180px] sm:h-[220px] flex items-center justify-center relative -mt-8 -mb-6"
             animate={{ 
               opacity: isDropdownOpen ? 0 : 1,
               scale: isDropdownOpen ? 0.95 : 1,
