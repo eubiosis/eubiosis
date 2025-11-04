@@ -271,11 +271,21 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick, onLearnMoreClick }: { o
         <div className="floating-element-animate" style={{ top: '75%', left: '90%', animationDelay: '2s' }}></div>
 
         {/* Responsive Main Content Padding */}
-        <div className="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 py-10 sm:px-8 sm:py-12 md:px-16 md:py-20 mt-0 sm:-mt-20">
+        <div className="relative z-10 min-h-screen flex flex-col justify-center items-center px-6 py-4 sm:px-8 sm:py-6 md:px-16 md:py-20 mt-0 sm:-mt-20">
           
-          {/* Mobile Product Image - Shows at top on mobile */}
+          {/* Mobile Hero Text - Shows above image on mobile */}
+          <div className="lg:hidden w-full text-center mb-6 mt-4">
+            <h2 className="text-xl sm:text-2xl font-mono font-medium text-white uppercase tracking-[0.3em] opacity-90 mb-2">
+              EUBIOSIS
+            </h2>
+            <h2 className="text-sm font-mono font-light text-white/80 uppercase tracking-[0.2em] opacity-80">
+              NOURISH, HEAL, THRIVE
+            </h2>
+          </div>
+
+          {/* Mobile Product Image - Shows after text on mobile */}
           <motion.div 
-            className="lg:hidden w-full max-w-sm h-[180px] sm:h-[220px] flex items-center justify-center relative -mt-8 -mb-6"
+            className="lg:hidden w-full max-w-sm h-[180px] sm:h-[220px] flex items-center justify-center relative -mb-24"
             animate={{ 
               opacity: isDropdownOpen ? 0 : 1,
               scale: isDropdownOpen ? 0.95 : 1,
@@ -334,18 +344,6 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick, onLearnMoreClick }: { o
           >
             
             <div className="text-left relative pt-10">
-              {/* Top tagline */}
-              <div className="mb-6 mt-8 relative">
-                <h2 className="text-lg sm:text-xl md:text-2xl font-mono font-medium text-white uppercase tracking-[0.3em] opacity-90">
-                  <span className="word-animate" data-delay="0">Eubiosis</span>
-                </h2>
-                <h2 className="text-xs sm:text-sm font-mono font-light text-white/80 uppercase tracking-[0.2em] opacity-80 absolute top-2 left-44">
-                  <span className="word-animate" data-delay="4200">Nourish,</span>{' '}
-                  <span className="word-animate" data-delay="4400">heal,</span>{' '}
-                  <span className="word-animate" data-delay="4600">thrive</span>
-                </h2>
-              </div>
-
               {/* Main Heading */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extralight leading-tight tracking-tight text-white text-decoration-animate mb-8">
                 <div className="mb-4 md:mb-6">

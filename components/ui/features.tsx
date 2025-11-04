@@ -618,39 +618,15 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                     transition={{ duration: 0.6, delay: 0.6 + (index * 0.1), ease: "easeOut" }}
                   >
                     <div
-                      className={`
-                        cursor-pointer py-4 px-2 transition-all duration-300 border-l-4 hover:pl-4
-                        ${isActive 
-                          ? 'border-l-[#8bccc2] bg-[#8bccc2]/5 pl-4' 
-                          : 'border-l-transparent hover:border-l-[#8bccc2]/30'
-                        }
-                      `}
+                      className="cursor-pointer py-4"
                       onClick={() => handleFeatureClick(index)}
                     >
-                      <h3 className={`
-                        text-lg font-semibold mb-2 transition-colors duration-300
-                        ${isActive ? 'text-[#8bccc2]' : 'text-gray-900 hover:text-[#8bccc2]/80'}
-                      `}>
+                      <h3 className={`text-lg font-semibold mb-2 ${isActive ? 'text-[#8bccc2]' : 'text-gray-900'}`}>
                         {feature.title}
                       </h3>
-                      <p className={`
-                        text-sm leading-relaxed transition-colors duration-300
-                        ${isActive ? 'text-gray-700' : 'text-gray-600'}
-                      `}>
+                      <p className={`text-sm leading-relaxed ${isActive ? 'text-gray-700' : 'text-gray-600'}`}>
                         {feature.description}
                       </p>
-                      
-                      {/* Progress Bar */}
-                      {isActive && (
-                        <div className="bg-gray-200 rounded-full h-1 overflow-hidden mt-3">
-                          <motion.div
-                            className="h-full bg-gradient-to-r from-[#8bccc2] to-[#78b4aa]"
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ duration: 0.1, ease: "linear" }}
-                          />
-                        </div>
-                      )}
                     </div>
                   </motion.div>
                 );
@@ -658,56 +634,43 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
 
               {/* Additional Content - Plain Text */}
               <motion.div 
-                className="pt-6 mt-6 border-t border-gray-200"
+                className="pt-6 mt-6"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
               >
                 <h4 className="text-base font-semibold text-gray-900 mb-3">Why Choose Eubiosis?</h4>
-                <div className="space-y-2 text-gray-600 text-sm">
-                  <div>• Clinically proven bacterial strains</div>
-                  <div>• Natural honey delivery system</div>
-                  <div>• No artificial preservatives</div>
-                  <div>• Third-party tested for purity</div>
-                </div>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  Clinically proven bacterial strains. Natural honey delivery system. No artificial preservatives. Third-party tested for purity.
+                </p>
               </motion.div>
 
-              {/* Scientific Backing Card */}
+              {/* Scientific Research - Plain Text */}
               <motion.div 
-                className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm"
+                className="pt-6 mt-6"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 1.0, ease: "easeOut" }}
               >
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Scientific Research</h4>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                <h4 className="text-base font-semibold text-gray-900 mb-3">Scientific Research</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
                   Our formula is backed by extensive research on the gut microbiome and its impact on overall health. 
                   Studies show that diverse probiotic strains can significantly improve digestive health and immune function.
+                  Based on 50+ peer-reviewed studies.
                 </p>
-                <div className="flex items-center space-x-2 text-[#8bccc2] text-sm font-medium">
-                  <span>📚</span>
-                  <span>Based on 50+ peer-reviewed studies</span>
-                </div>
               </motion.div>
 
-              {/* Customer Success Card */}
+              {/* Customer Success - Plain Text */}
               <motion.div 
-                className="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl border border-green-200"
+                className="pt-6 mt-6"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
               >
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Customer Success</h4>
-                <div className="grid grid-cols-2 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-bold text-[#8bccc2]">94%</div>
-                    <div className="text-sm text-gray-600">Report Improvement</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-bold text-[#8bccc2]">2 weeks</div>
-                    <div className="text-sm text-gray-600">Average Results</div>
-                  </div>
-                </div>
+                <h4 className="text-base font-semibold text-gray-900 mb-3">Customer Success</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">
+                  94% report improvement. 2 weeks average results.
+                </p>
               </motion.div>
 
             </div>
