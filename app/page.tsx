@@ -47,6 +47,10 @@ export default function Home() {
   const handleLearnMoreClick = () => {
     setViewMode('browsing');
     setSelectedIllness(null);
+    // Scroll to the "What is eubiosis?" section after a short delay to allow the component to render
+    setTimeout(() => {
+      scrollToSection('what-is-eubiosis');
+    }, 100);
   }
 
   const handlePrevIllness = () => {
@@ -278,6 +282,7 @@ export default function Home() {
         {viewMode === 'browsing' && (
           <motion.div
             key="what-is-eubiosis"
+            id="what-is-eubiosis"
             initial={{ opacity: 0, y: 100, scale: 0.9, rotateX: 20 }}
             animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
             exit={{ opacity: 0, y: -50, transition: { duration: 0.5 } }}

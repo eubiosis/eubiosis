@@ -3,7 +3,8 @@ import { TextSplit } from './split-text';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ShoppingBag } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
 interface Ripple {
   id: number;
@@ -491,15 +492,24 @@ const EubiosisHero = ({ onIllnessClick, onBrowsingClick, onLearnMoreClick }: { o
               </div>
 
               {/* Additional Action Buttons */}
-              <div className="mt-6 flex justify-start gap-4">
+              <div className="mt-6 flex justify-start gap-4 items-center">
                 <button className="btn-secondary" onClick={onLearnMoreClick}>
                   LEARN MORE
                 </button>
-                <Link href="/eubiosis-bottle/size-s/quantity-1">
-                  <button className="btn">
-                    SHOP NOW
-                  </button>
-                </Link>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link href="/eubiosis-bottle/size-s/quantity-1">
+                        <button className="btn p-4 flex items-center justify-center">
+                          <ShoppingBag className="w-6 h-6" />
+                        </button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Shop Now</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
 
               {/* Detail Lines for Left Column */}

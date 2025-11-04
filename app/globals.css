@@ -236,27 +236,12 @@
   }
 }
 
-/* Secondary button - white background, blue on hover */
-.btn-browsing {
- background: linear-gradient(135deg, #6B7280, #4B5563);
- color: #fff;
- padding: 12px 24px;
- border-radius: 15px;
- border: 2px solid #6B7280;
- font-weight: 600;
- text-transform: uppercase;
- letter-spacing: 1px;
- cursor: pointer;
- transition: all 0.3s ease;
- position: relative;
- overflow: hidden;
- font-size: 18px;
-}
+/* Secondary button - removed duplicate, using the one below with illness buttons */
 
 .btn-secondary {
- background-color: #fff;
+ background-color: #8bccc2;
  padding: 14px 40px;
- color: #8bccc2;
+ color: #fff;
  text-transform: uppercase;
  letter-spacing: 2px;
  cursor: pointer;
@@ -273,8 +258,8 @@
 .btn-secondary:hover {
  transition: .4s;
  border: 2px dashed #8bccc2;
- background-color: #8bccc2;
- color: #fff;
+ background-color: #fff;
+ color: #8bccc2;
 }
 
 .btn-secondary:active {
@@ -288,8 +273,7 @@
 .btn-depression,
 .btn-autoimmune,
 .btn-digestive,
-.btn-skin,
-.btn-browsing {
+.btn-skin {
  padding: 1em 2em;
  border: none;
  border-radius: 5px;
@@ -307,8 +291,23 @@
  background: white;
 } 
 
+/* Browsing button - separate styling with green background */
 .btn-browsing {
+ padding: 1em 2em;
+ border: none;
+ border-radius: 5px;
+ font-weight: bold;
+ letter-spacing: 5px;
+ text-transform: uppercase;
+ cursor: pointer;
+ color: #ffffff;
+ transition: all 1000ms;
+ font-family: 'Futura', 'Trebuchet MS', 'Arial Narrow', sans-serif;
  font-size: 15px;
+ position: relative;
+ overflow: hidden;
+ outline: 2px solid #8bccc2;
+ background: linear-gradient(135deg, #8bccc2, #4AAE9B);
 }
 
 .btn-diabetes::before,
@@ -317,8 +316,7 @@
 .btn-depression::before,
 .btn-autoimmune::before,
 .btn-digestive::before,
-.btn-skin::before,
-.btn-browsing::before {
+.btn-skin::before {
  content: "";
  position: absolute;
  left: -50px;
@@ -326,6 +324,19 @@
  width: 0;
  height: 100%;
  background-color: #8bccc2;
+ transform: skewX(45deg);
+ z-index: -1;
+ transition: width 1000ms;
+}
+
+.btn-browsing::before {
+ content: "";
+ position: absolute;
+ left: -50px;
+ top: 0;
+ width: 0;
+ height: 100%;
+ background-color: #ffffff;
  transform: skewX(45deg);
  z-index: -1;
  transition: width 1000ms;
@@ -348,9 +359,15 @@
 .btn-depression:hover,
 .btn-autoimmune:hover,
 .btn-digestive:hover,
-.btn-skin:hover,
-.btn-browsing:hover {
+.btn-skin:hover {
  color: #ffffff;
+ transform: scale(1.1);
+ outline: 2px solid #78b4aa;
+ box-shadow: 4px 5px 17px -4px #268391;
+}
+
+.btn-browsing:hover {
+ color: #8bccc2;
  transform: scale(1.1);
  outline: 2px solid #78b4aa;
  box-shadow: 4px 5px 17px -4px #268391;

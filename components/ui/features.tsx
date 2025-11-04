@@ -606,9 +606,8 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
             {/* Scrollable Content Container */}
             <div className="h-[390px] overflow-y-auto pr-4 space-y-6 scrollbar-thin scrollbar-thumb-[#8bccc2] scrollbar-track-gray-100 scrollbar-w-2">
               
-              {/* Feature Cards */}
+              {/* Feature Text List */}
               {features.map((feature, index) => {
-                const Icon = feature.icon;
                 const isActive = currentFeature === index;
 
                 return (
@@ -620,90 +619,57 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                   >
                     <div
                       className={`
-                        cursor-pointer p-6 rounded-2xl border transition-all duration-300 hover:shadow-lg
+                        cursor-pointer py-4 px-2 transition-all duration-300 border-l-4 hover:pl-4
                         ${isActive 
-                          ? 'bg-gradient-to-br from-[#8bccc2]/10 to-[#78b4aa]/10 border-[#8bccc2]/30 shadow-md' 
-                          : 'bg-white border-gray-200 hover:border-[#8bccc2]/20'
+                          ? 'border-l-[#8bccc2] bg-[#8bccc2]/5 pl-4' 
+                          : 'border-l-transparent hover:border-l-[#8bccc2]/30'
                         }
                       `}
                       onClick={() => handleFeatureClick(index)}
                     >
-                    <div className="flex items-start space-x-4">
-                      <div className={`
-                        p-3 rounded-full flex-shrink-0 transition-all duration-300
-                        ${isActive 
-                          ? 'bg-[#8bccc2] text-white' 
-                          : 'bg-[#8bccc2]/10 text-[#8bccc2]'
-                        }
+                      <h3 className={`
+                        text-lg font-semibold mb-2 transition-colors duration-300
+                        ${isActive ? 'text-[#8bccc2]' : 'text-gray-900 hover:text-[#8bccc2]/80'}
                       `}>
-                        {typeof Icon === 'string' ? (
-                          <Image 
-                            src={Icon} 
-                            alt={feature.title}
-                            width={24}
-                            height={24}
-                            className="w-6 h-6 object-contain"
+                        {feature.title}
+                      </h3>
+                      <p className={`
+                        text-sm leading-relaxed transition-colors duration-300
+                        ${isActive ? 'text-gray-700' : 'text-gray-600'}
+                      `}>
+                        {feature.description}
+                      </p>
+                      
+                      {/* Progress Bar */}
+                      {isActive && (
+                        <div className="bg-gray-200 rounded-full h-1 overflow-hidden mt-3">
+                          <motion.div
+                            className="h-full bg-gradient-to-r from-[#8bccc2] to-[#78b4aa]"
+                            initial={{ width: 0 }}
+                            animate={{ width: `${progress}%` }}
+                            transition={{ duration: 0.1, ease: "linear" }}
                           />
-                        ) : (
-                          React.createElement(Icon as React.ComponentType<{size: number}>, { size: 24 })
-                        )}
-                      </div>
-
-                      <div className="flex-1">
-                        <h3 className={`
-                          text-xl font-semibold mb-3 transition-colors duration-300
-                          ${isActive ? 'text-[#8bccc2]' : 'text-gray-900'}
-                        `}>
-                          {feature.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed mb-4">
-                          {feature.description}
-                        </p>
-                        
-                        {/* Progress Bar */}
-                        <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
-                          {isActive && (
-                            <motion.div
-                              className="h-full bg-gradient-to-r from-[#8bccc2] to-[#78b4aa]"
-                              initial={{ width: 0 }}
-                              animate={{ width: `${progress}%` }}
-                              transition={{ duration: 0.1, ease: "linear" }}
-                            />
-                          )}
                         </div>
-                      </div>
+                      )}
                     </div>
-                  </div>
                   </motion.div>
                 );
               })}
 
-              {/* Additional Content Cards */}
+              {/* Additional Content - Plain Text */}
               <motion.div 
-                className="bg-gradient-to-br from-[#8bccc2]/5 to-[#78b4aa]/5 p-6 rounded-2xl border border-[#8bccc2]/10"
+                className="pt-6 mt-6 border-t border-gray-200"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                 transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
               >
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Why Choose Eubiosis?</h4>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#8bccc2] rounded-full"></div>
-                    <span>Clinically proven bacterial strains</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#8bccc2] rounded-full"></div>
-                    <span>Natural honey delivery system</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#8bccc2] rounded-full"></div>
-                    <span>No artificial preservatives</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-[#8bccc2] rounded-full"></div>
-                    <span>Third-party tested for purity</span>
-                  </li>
-                </ul>
+                <h4 className="text-base font-semibold text-gray-900 mb-3">Why Choose Eubiosis?</h4>
+                <div className="space-y-2 text-gray-600 text-sm">
+                  <div>• Clinically proven bacterial strains</div>
+                  <div>• Natural honey delivery system</div>
+                  <div>• No artificial preservatives</div>
+                  <div>• Third-party tested for purity</div>
+                </div>
               </motion.div>
 
               {/* Scientific Backing Card */}
@@ -1075,40 +1041,54 @@ export function EubiosisFeatures({ illness, onBrowsingClick, onResetToHero, onPr
                   {cycling && (
                     <>
                       {/* Carousel Navigation */}
-                      <div className="flex items-center gap-6">
-                        <motion.button 
-                          className="p-2 rounded-full bg-[#8bccc2]/20 hover:bg-[#8bccc2]/30 transition-colors"
-                          onClick={onPrevIllness}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <ChevronLeft className="w-5 h-5 text-[#8bccc2]" />
-                        </motion.button>
-                        
-                        {/* Illness Name and Counter */}
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="text-[#8bccc2] font-semibold text-sm">
-                            {illness}
+                      <div className="relative">
+                        {/* Enhanced Navigation Display with integrated arrows */}
+                        <div className="flex items-center justify-between bg-white/80 backdrop-blur-sm rounded-lg px-4 py-3 shadow-lg border border-[#8bccc2]/20 min-w-[280px]">
+                          <motion.button 
+                            className="p-2 rounded-full hover:bg-[#8bccc2]/20 transition-colors"
+                            onClick={onPrevIllness}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <ChevronLeft className="w-5 h-5 text-[#8bccc2]" />
+                          </motion.button>
+                          
+                          <div className="flex flex-col items-center gap-2">
+                            <div className="text-[#8bccc2] font-bold text-base">
+                              {illness}
+                            </div>
+                            <div className="text-gray-700 font-medium text-sm">
+                              Symptoms {illnesses.indexOf(illness || illnesses[0]) + 1} to {illnesses.length}
+                            </div>
+                            <div className="flex items-center gap-2 mt-1">
+                              {illnesses.map((_, index) => (
+                                <div
+                                  key={index}
+                                  className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                                    index === illnesses.indexOf(illness || illnesses[0])
+                                      ? 'bg-[#8bccc2] scale-125 shadow-md'
+                                      : 'bg-gray-300 hover:bg-[#8bccc2]/50'
+                                  }`}
+                                />
+                              ))}
+                            </div>
                           </div>
-                          <div className="text-gray-500 text-xs">
-                            {illnesses.indexOf(illness || illnesses[0]) + 1} / {illnesses.length}
-                          </div>
+                          
+                          <motion.button 
+                            className="p-2 rounded-full hover:bg-[#8bccc2]/20 transition-colors"
+                            onClick={onNextIllness}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            <ChevronRight className="w-5 h-5 text-[#8bccc2]" />
+                          </motion.button>
                         </div>
-                        
-                        <motion.button 
-                          className="p-2 rounded-full bg-[#8bccc2]/20 hover:bg-[#8bccc2]/30 transition-colors"
-                          onClick={onNextIllness}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-                          transition={{ duration: 0.6, delay: 1.4, ease: "easeOut" }}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                        >
-                          <ChevronRight className="w-5 h-5 text-[#8bccc2]" />
-                        </motion.button>
                       </div>
                       
                       {/* Read More Button for Cycling Mode */}
